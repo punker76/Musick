@@ -6,8 +6,29 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="MusickLibrary" Height="300" Width="300">
+        Title="MusickLibrary" SizeToContent="WidthAndHeight">
+    <Controls:MetroWindow.RightWindowCommands>
+        <Controls:WindowCommands>
+            <Button x:Name="btnBrowse"
+                Content="Browse"
+                Click="btnBrowse_Click"/>
+        </Controls:WindowCommands>
+    </Controls:MetroWindow.RightWindowCommands>
     <Grid>
-        
+
+        <DataGrid x:Name="dtgLibrary"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Stretch"
+                  ItemsSource="{Binding}"
+                  IsReadOnly="True"
+                  AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Title" Binding="{Binding SongTitle}"/>
+                <DataGridTextColumn Header="Artist" Binding="{Binding SongArtist}"/>
+                <DataGridTextColumn Header="Album" Binding="{Binding SongAlbum}"/>
+                <DataGridTextColumn Header="Genre" Binding="{Binding SongGenre}"/>
+                <DataGridTextColumn Header="Year" Binding="{Binding SongYear}"/>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </Controls:MetroWindow>

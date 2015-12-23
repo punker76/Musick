@@ -22,8 +22,13 @@
         <Menu x:Name="playerMenu"
               VerticalAlignment="Top"
               HorizontalAlignment="Stretch"
-              Height="30">
-            <MenuItem Header="Windows"/>
+              Height="30"
+              MouseEnter="playerMenu_MouseEnter"
+              MouseLeave="playerMenu_MouseLeave">
+            <MenuItem Header="Windows">
+                <MenuItem Header="Library"
+                          Click="MenuItem_Click"/>
+            </MenuItem>
         </Menu>
 
         <Grid x:Name="AudioControlGrid" Width="350" Height="350" MouseEnter="AudioControlGrid_MouseEnter" MouseLeave="AudioControlGrid_MouseLeave">

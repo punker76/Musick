@@ -39,7 +39,6 @@ namespace Musick
         private bool mediaPlayerIsPlaying = false;
         
 
-
         public MainWindow()
         {
             InitializeComponent();
@@ -53,6 +52,7 @@ namespace Musick
             // Control visibility @ runtime.
             volumeBar.Visibility = Visibility.Hidden;
             AudioControlGrid.Opacity = 0; AudioControlGrid.Visibility = Visibility.Hidden;
+            playerMenu.Opacity = 0; playerMenu.Visibility = Visibility.Hidden;
 
             // AutoHide controls timer.
             timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.0) };
@@ -66,14 +66,14 @@ namespace Musick
 
 
 
-        #region Animation Shit
+        #region UI Animation shit.
 
         private bool isUsingControls;
         private DispatcherTimer timer;
         void timer_Tick(object sender, EventArgs e)
         {
             timer.Stop();
-            DoAudioControlFade("out", AudioControlGrid);
+            DoAudioControlFade("out", AudioControlGrid, playerMenu);
 
         }
 
@@ -89,7 +89,7 @@ namespace Musick
             // If the opacity is 0 when you move your mouse, it'll go ahead and do this.
             if (AudioControlGrid.Opacity == 0)
             {
-                DoAudioControlFade("in", AudioControlGrid);
+                DoAudioControlFade("in", AudioControlGrid, playerMenu);
             }
         }
 
@@ -105,17 +105,30 @@ namespace Musick
             isUsingControls = false;
         }
 
-        private void DoAudioControlFade(string inOrOut, System.Windows.Controls control)
+        private void playerMenu_MouseEnter(object sender, MouseEventArgs e)
+        {
+            timer.Stop();
+            isUsingControls = true;
+        }
+
+        private void playerMenu_MouseLeave(object sender, MouseEventArgs e)
+        {
+            timer.Stop();
+            isUsingControls = false;
+        }
+
+        private void DoAudioControlFade(string inOrOut, params FrameworkElement[] control)
         {
             // Fade the controls in or out, based on the set property.
+            foreach(FrameworkElement thiscontrol in control)
             if (inOrOut == "in")
             {
-                control.Visibility = Visibility.Visible;
+                thiscontrol.Visibility = Visibility.Visible;
                 DoubleAnimation da = new DoubleAnimation();
                 da.From = 0;
                 da.To = 0.8;
                 da.Duration = new Duration(TimeSpan.FromSeconds(0.4));
-                control.BeginAnimation(OpacityProperty, da);
+                thiscontrol.BeginAnimation(OpacityProperty, da);
             }
             else if (inOrOut == "out")
             {
@@ -125,9 +138,9 @@ namespace Musick
                 da.Duration = new Duration(TimeSpan.FromSeconds(0.4));
                 da.Completed += (sender, eargs) =>
                 {
-                    control.Visibility = Visibility.Hidden;
+                    thiscontrol.Visibility = Visibility.Hidden;
                 };
-                control.BeginAnimation(OpacityProperty, da);
+                thiscontrol.BeginAnimation(OpacityProperty, da);
             }
         }
         #endregion
@@ -373,6 +386,15 @@ namespace Musick
                     playerMenu.Visibility = Visibility.Visible;
                 }
             }
+        }
+
+        #endregion
+
+        #region Menu Items
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MusickLibrary newLibrary = new MusickLibrary();
+            newLibrary.Show();
         }
         #endregion
     }

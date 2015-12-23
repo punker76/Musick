@@ -114,6 +114,7 @@
     <Compile Include="MusickSettings.xaml.cs">
       <DependentUpon>MusickSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Musick_Classes\DataObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -148,9 +149,7 @@
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Musick_Classes\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="FodyWeavers.xml" />
   </ItemGroup>
