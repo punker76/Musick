@@ -6,129 +6,207 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Player" Height="350" Width="525" WindowTransitionsEnabled="False" MouseMove="MetroWindow_MouseMove">
+        Title="Musick - Player" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False" MouseMove="MetroWindow_MouseMove" EnableDWMDropShadow="True" ResizeMode="NoResize">
+    <Grid x:Name="MainWindowGrid" Width="350" Height="350">
 
-    <Grid>
-        <Grid Name="AudioControlGrid" Margin="8,8,8,8" HorizontalAlignment="Center">
+        <Grid x:Name="AudioControlGrid" Width="350" Height="350">
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
 
-            <StackPanel Grid.Column="0"
+            <StatusBar Grid.Row="1">
+                <StatusBar.Background>
+                    <SolidColorBrush Opacity="0"/>
+                </StatusBar.Background>
+                <StatusBar.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                        </Grid>
+                    </ItemsPanelTemplate>
+                </StatusBar.ItemsPanel>
+                <StatusBarItem VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="6,0,0,0">
+                    <TextBlock Name="lblProgressStatus" FontWeight="Bold" >00:00:00</TextBlock>
+                </StatusBarItem>
+                <StatusBarItem Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="1,1,3,2">
+                    <Slider Name="sliProgress" 
+                            Thumb.DragStarted="sliProgress_DragStarted"  
+                            Thumb.DragCompleted="sliProgress_DragCompleted" 
+                            ValueChanged="sliProgress_ValueChanged" 
+                            Style="{DynamicResource FlatSlider}" 
+                            Width="280" 
+                            IsEnabled="False" 
+                            IsMoveToPointEnabled="True"/>
+                </StatusBarItem>
+            </StatusBar>
+
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
-                    Margin="8,8,8,8">
-                <Button x:Name="btnBrowseTrack"
+                    Margin="5,5,5,5">
+                    <Button x:Name="btnBrowseTrack"
                     Click="btnBrowseTrack_Click"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Width="30"
                     Height="30"
                     Style="{DynamicResource SquareButtonStyle}">
-                    <Rectangle Width="15"
+                        <Rectangle Width="15"
                            Height="15"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
                                      Visual="{StaticResource appbar_folder}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </StackPanel>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
 
-            <StackPanel Grid.Column="1"
+                <StackPanel Grid.Column="1"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
-                    Margin="8,8,8,8">
-                <Button x:Name="btnPreviousTrack"
+                    Margin="5,5,5,5">
+                    <Button x:Name="btnPreviousTrack"
                     Click="btnPreviousTrack_Click"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Width="30"
                     Height="30"
                     Style="{DynamicResource SquareButtonStyle}">
-                    <Rectangle Width="15"
+                        <Rectangle Width="15"
                            Height="15"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
                                      Visual="{StaticResource appbar_control_rewind_variant}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </StackPanel>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
 
-            <StackPanel Grid.Column="2"
+                <StackPanel Grid.Column="2"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
-                    Margin="8,8,8,8">
-                <Button x:Name="btnPlayTrack"
+                    Margin="5,5,5,5">
+                    <Button x:Name="btnPlayTrack"
                     Click="btnPlayTrack_Click"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Width="30"
                     Height="30"
                     Style="{DynamicResource SquareButtonStyle}">
-                    <Rectangle Width="15"
-                           Height="15"
-                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                     Visual="{StaticResource appbar_control_play}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </StackPanel>
+                        <Rectangle Width="15"
+                               Height="15"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                               x:Name="playButtonVisual">
+                            <Rectangle.Style>
+                                <Style TargetType="{x:Type Rectangle}">
+                                    <Setter Property="OpacityMask">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_control_play}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="OpacityMask">
+                                                <Setter.Value>
+                                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_control_pause}" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
 
-            <StackPanel Grid.Column="3"
+                <StackPanel Grid.Column="3"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
-                    Margin="8,8,8,8">
-                <Button x:Name="btnNextTrack"
+                    Margin="5,5,5,5">
+                    <Button x:Name="btnNextTrack"
                     Click="btnNextTrack_Click"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Width="30"
                     Height="30"
                     Style="{DynamicResource SquareButtonStyle}">
-                    <Rectangle Width="15"
+                        <Rectangle Width="15"
                            Height="15"
                            Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
+                            <Rectangle.OpacityMask>
+                                <VisualBrush Stretch="Uniform"
                                      Visual="{StaticResource appbar_control_fastforward_variant}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </StackPanel>
+                            </Rectangle.OpacityMask>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
 
-            <StackPanel Grid.Column="4"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Margin="8,8,8,8">
-                <Button x:Name="btnVolume"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Width="30"
-                    Height="30"
-                    Style="{DynamicResource SquareButtonStyle}">
-                    <Rectangle Width="15"
-                           Height="15"
-                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                        <Rectangle.OpacityMask>
-                            <VisualBrush Stretch="Uniform"
-                                     Visual="{StaticResource appbar_sound_3}" />
-                        </Rectangle.OpacityMask>
-                    </Rectangle>
-                </Button>
-            </StackPanel>
+                <StackPanel Grid.Column="4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Bottom"
+                            Margin="5,5,5,5">
+                    <Button x:Name="btnVolume"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Width="30"
+                            Height="30"                            
+                            Click="btnVolume_Click"
+                            MouseRightButtonDown="btnVolume_MouseRightButtonDown"
+                            Style="{DynamicResource SquareButtonStyle}">
+                        <Rectangle Width="15"
+                               Height="15"
+                               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                               x:Name="audioButtonVisual">
+                            <Rectangle.Style>
+                                <Style TargetType="{x:Type Rectangle}">
+                                    <Setter Property="OpacityMask">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_sound_3}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="OpacityMask">
+                                                <Setter.Value>
+                                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_sound_mute}" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
+                        </Rectangle>
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Slider x:Name="volumeBar"                
+            	    Margin="280,10,10,10"           	            	
+            	    Grid.Row="2" 
+                    Maximum="1"
+                    Minimum="0"
+                    Ticks="1000"
+                    IsMoveToPointEnabled="True"
+                    ValueChanged="volumeBar_ValueChanged"/>
         </Grid>
     </Grid>
 </Controls:MetroWindow>
