@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Player" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False" MouseMove="MetroWindow_MouseMove" EnableDWMDropShadow="True" ResizeMode="NoResize">
+        Title="Musick - Player" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False" MouseMove="MetroWindow_MouseMove" EnableDWMDropShadow="True" ResizeMode="NoResize" IsMaxRestoreButtonEnabled="False" Icon="Musick.ico" ShowTitleBar="False">
     <Grid x:Name="MainWindowGrid" Width="350" Height="350">
 
         <Grid x:Name="AudioControlGrid" Width="350" Height="350">
