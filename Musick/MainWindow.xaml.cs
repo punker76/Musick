@@ -68,6 +68,7 @@ namespace Musick
 
         #region Animation Shit
 
+        private bool isUsingControls;
         private DispatcherTimer timer;
         void timer_Tick(object sender, EventArgs e)
         {
@@ -80,27 +81,41 @@ namespace Musick
         {
             // Timer controls when you move your mouse on the window.
             timer.Stop();
-            timer.Start();
-
+            if(isUsingControls == false)
+            {
+                timer.Start();
+            }
+            
             // If the opacity is 0 when you move your mouse, it'll go ahead and do this.
             if (AudioControlGrid.Opacity == 0)
             {
                 DoAudioControlFade("in", AudioControlGrid);
-
             }
         }
 
-        private void DoAudioControlFade(string inOrOut, Grid grid)
+        private void AudioControlGrid_MouseEnter(object sender, MouseEventArgs e)
+        {
+            timer.Stop();
+            isUsingControls = true;
+        }
+
+        private void AudioControlGrid_MouseLeave(object sender, MouseEventArgs e)
+        {
+            timer.Start();
+            isUsingControls = false;
+        }
+
+        private void DoAudioControlFade(string inOrOut, System.Windows.Controls control)
         {
             // Fade the controls in or out, based on the set property.
             if (inOrOut == "in")
             {
-                grid.Visibility = Visibility.Visible;
+                control.Visibility = Visibility.Visible;
                 DoubleAnimation da = new DoubleAnimation();
                 da.From = 0;
                 da.To = 0.8;
                 da.Duration = new Duration(TimeSpan.FromSeconds(0.4));
-                grid.BeginAnimation(OpacityProperty, da);
+                control.BeginAnimation(OpacityProperty, da);
             }
             else if (inOrOut == "out")
             {
@@ -110,9 +125,9 @@ namespace Musick
                 da.Duration = new Duration(TimeSpan.FromSeconds(0.4));
                 da.Completed += (sender, eargs) =>
                 {
-                    grid.Visibility = Visibility.Hidden;
+                    control.Visibility = Visibility.Hidden;
                 };
-                grid.BeginAnimation(OpacityProperty, da);
+                control.BeginAnimation(OpacityProperty, da);
             }
         }
         #endregion
@@ -342,12 +357,23 @@ namespace Musick
 
         #endregion
 
+
+        #region Window Hotkeys
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.H && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
             {
                 this.ShowTitleBar = !this.ShowTitleBar;
+                if(playerMenu.Visibility == Visibility.Visible)
+                {
+                    playerMenu.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    playerMenu.Visibility = Visibility.Visible;
+                }
             }
         }
+        #endregion
     }
 }

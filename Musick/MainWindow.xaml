@@ -17,9 +17,16 @@
         ShowIconOnTitleBar="False"
         KeyDown="MetroWindow_KeyDown" 
         TitleCaps="False">
-    <Grid x:Name="MainWindowGrid" Width="350" Height="350">
+    
+    <Grid x:Name="MainWindowGrid">
+        <Menu x:Name="playerMenu"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"
+              Height="30">
+            <MenuItem Header="Windows"/>
+        </Menu>
 
-        <Grid x:Name="AudioControlGrid" Width="350" Height="350">
+        <Grid x:Name="AudioControlGrid" Width="350" Height="350" MouseEnter="AudioControlGrid_MouseEnter" MouseLeave="AudioControlGrid_MouseLeave">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="40"/>
