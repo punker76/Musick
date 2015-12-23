@@ -200,13 +200,12 @@ namespace Musick
                         currentAlbumArtBMI.StreamSource = ms;
                         currentAlbumArtBMI.EndInit();
                     }
-                    Bitmap currentAlbumArt = BitmapImage2Bitmap(currentAlbumArtBMI);
-                    lblProgressStatus.Foreground = new SolidColorBrush(ContrastColourfromDominantColour(currentAlbumArt).foregroundColour);
-                    lblProgressStatus.Background = new SolidColorBrush(ContrastColourfromDominantColour(currentAlbumArt).backgroundColour);
+                    //Bitmap currentAlbumArt = BitmapImage2Bitmap(currentAlbumArtBMI);
+                    //lblProgressStatus.Foreground = new SolidColorBrush(ContrastColourfromDominantColour(currentAlbumArt).foregroundColour);
+                    //lblProgressStatus.Background = new SolidColorBrush(ContrastColourfromDominantColour(currentAlbumArt).backgroundColour);
                     ImageBrush imgBrush = new ImageBrush();
                     imgBrush.ImageSource = currentAlbumArtBMI;
-                    MainWindowGrid.Background = imgBrush;
-                    //ms.Close();
+                    MainWindowGrid.Background = imgBrush;                    
                 }
             }
         }
@@ -214,9 +213,9 @@ namespace Musick
 
 
         #region The nightmare that is albumArt/UI continuity
-
+        
         private BitmapImage currentAlbumArtBMI;
-
+        /*
         // Convert the currently displayed album art to a bitmap so I can use it for UI stuff.
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
         {
@@ -292,6 +291,7 @@ namespace Musick
 
             return textOpposite;
         }
+        */
         #endregion
 
 
@@ -339,8 +339,15 @@ namespace Musick
         {
             mediaPlayer.Volume = volumeBar.Value;
         }
+
         #endregion
 
-
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.H && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
+            {
+                this.ShowTitleBar = !this.ShowTitleBar;
+            }
+        }
     }
 }

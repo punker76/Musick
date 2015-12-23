@@ -6,7 +6,17 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Player" SizeToContent="WidthAndHeight" WindowTransitionsEnabled="False" MouseMove="MetroWindow_MouseMove" EnableDWMDropShadow="True" ResizeMode="NoResize" IsMaxRestoreButtonEnabled="False" Icon="Musick.ico" ShowTitleBar="False">
+        Title="Musick - Player" 
+        SizeToContent="WidthAndHeight" 
+        WindowTransitionsEnabled="False"
+        MouseMove="MetroWindow_MouseMove" 
+        EnableDWMDropShadow="True" 
+        ResizeMode="NoResize" 
+        IsMaxRestoreButtonEnabled="False" 
+        Icon="Musick.ico" 
+        ShowIconOnTitleBar="False"
+        KeyDown="MetroWindow_KeyDown" 
+        TitleCaps="False">
     <Grid x:Name="MainWindowGrid" Width="350" Height="350">
 
         <Grid x:Name="AudioControlGrid" Width="350" Height="350">
@@ -32,7 +42,7 @@
                     </ItemsPanelTemplate>
                 </StatusBar.ItemsPanel>
                 <StatusBarItem VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="6,0,0,0">
-                    <TextBlock Name="lblProgressStatus" FontWeight="Bold" >00:00:00</TextBlock>
+                    <TextBlock Name="lblProgressStatus" FontWeight="Bold" Foreground="Black" Background="Gray" >00:00:00</TextBlock>
                 </StatusBarItem>
                 <StatusBarItem Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="1,1,3,2">
                     <Slider Name="sliProgress" 
