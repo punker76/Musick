@@ -70,7 +70,13 @@ namespace Musick
             mediaPlayer.Open(new Uri(song.FileLocation));
             mediaPlayerIsPlaying = false;
             DoSetAlbumArt(song);
+            DoSetWindowTitle(song);
             DoPlaySong();
+        }
+
+        public void DoSetWindowTitle(Song song)
+        {
+            this.Title = song.SongTitle + song.SongArtist;
         }
 
         public void DoSetAlbumArt(Song song)
