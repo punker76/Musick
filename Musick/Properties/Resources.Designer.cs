@@ -59,5 +59,15 @@ namespace Musick.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PLACEHOLDER {
+            get {
+                object obj = ResourceManager.GetObject("PLACEHOLDER", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

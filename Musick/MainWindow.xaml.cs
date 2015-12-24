@@ -24,6 +24,7 @@ using MColor = System.Windows.Media.Color;
 using DColor = System.Drawing.Color;
 using System.ComponentModel;
 using Musick.Musick_Classes;
+using System.Windows.Interop;
 
 namespace Musick
 {
@@ -32,21 +33,18 @@ namespace Musick
     /// </summary>
     public partial class MainWindow
     {
-
-                
         
         public MediaPlayer mediaPlayer = new MediaPlayer();
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
         
-
         public MainWindow()
         {
             InitializeComponent();
 
             this.DataContext = this;
 
-            // Set media voluma (user default goes here) and set volumeBar to the mediaPlayer volume.
+            // Set media voluma (user stored variable goes here) and set volumeBar to the mediaPlayer volume.
             mediaPlayer.Volume = 0.5;
             volumeBar.Value = mediaPlayer.Volume;
 
@@ -55,7 +53,7 @@ namespace Musick
             AudioControlGrid.Opacity = 0; AudioControlGrid.Visibility = Visibility.Hidden;
             playerMenu.Opacity = 0; playerMenu.Visibility = Visibility.Hidden;
 
-            // AutoHide controls timer.
+            // AutoHide controls timer (Maybe user setting?)
             timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.0) };
             timer.Tick += timer_Tick;
 
@@ -67,8 +65,11 @@ namespace Musick
             mediaTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.1) };
             mediaTimer.Tick += mediaTimer_Tick;
             mediaTimer.Start();
+
         }
 
+
+        #region Actions
         public void DoLoadSongFromLibrary(Song song)
         {
             mediaPlayer.Open(new Uri(song.FileLocation));
@@ -83,28 +84,7 @@ namespace Musick
             this.Title = song.SongTitle+ " - " +song.SongArtist;
         }
 
-        public void DoSetAlbumArt(Song song)
-        {
-            currentTrack = song.FileLocation;
 
-            TagLib.File f = new TagLib.Mpeg.AudioFile(currentTrack);
-            if (f.Tag.Pictures.Length > 0)
-            {
-                TagLib.IPicture pic = f.Tag.Pictures[0];
-                MemoryStream ms = new MemoryStream(pic.Data.Data);
-                if (ms != null && ms.Length > 4096)
-                    ms.Seek(0, SeekOrigin.Begin);
-                {
-                    currentAlbumArtBMI = new BitmapImage();
-                    currentAlbumArtBMI.BeginInit();
-                    currentAlbumArtBMI.StreamSource = ms;
-                    currentAlbumArtBMI.EndInit();
-                }
-                ImageBrush imgBrush = new ImageBrush();
-                imgBrush.ImageSource = currentAlbumArtBMI;
-                MainWindowGrid.Background = imgBrush;
-            }
-        }
 
         public void DoPlaySong()
         {
@@ -130,8 +110,16 @@ namespace Musick
             }
         }
 
-        #region UI Animation shit.
+        public void DoGetPreviousSong()
+        {
+            Library.PreviousSong();
+        }
+        #endregion
 
+
+        #region UI
+
+        #region control Animations
         private bool isUsingControls;
         private DispatcherTimer timer;
         void timer_Tick(object sender, EventArgs e)
@@ -209,12 +197,50 @@ namespace Musick
         }
         #endregion
 
+            #region AlbumArt
+        private BitmapImage currentAlbumArtBMI;
+        public void DoSetAlbumArt(Song song)
+        {
+            string songAlbumArt = song.FileLocation;
 
-        #region Audio Controls.
+            TagLib.File f = TagLib.File.Create(songAlbumArt);
+            if (f.Tag.Pictures.Length > 0)
+            {
+                TagLib.IPicture pic = f.Tag.Pictures[0];
+                MemoryStream ms = new MemoryStream(pic.Data.Data);
+                if (ms != null && ms.Length > 4096)
+                    ms.Seek(0, SeekOrigin.Begin);
+                {
+                    currentAlbumArtBMI = new BitmapImage();
+                    currentAlbumArtBMI.BeginInit();
+                    currentAlbumArtBMI.StreamSource = ms;
+                    currentAlbumArtBMI.EndInit();
+                }
+                ImageBrush imgBrush = new ImageBrush();
+                imgBrush.ImageSource = currentAlbumArtBMI;
+                MainWindowGrid.Background = imgBrush;
+            }
+            else
+            {
+                var image = Properties.Resources.PLACEHOLDER;
+                var bitmap = new System.Drawing.Bitmap(image);
+                var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(),
+                                                                                      IntPtr.Zero,
+                                                                                      Int32Rect.Empty,
+                                                                                      BitmapSizeOptions.FromEmptyOptions()
+                      );
+                bitmap.Dispose();
+                ImageBrush imgBrush = new ImageBrush();
+                imgBrush.ImageSource = bitmapSource;
+                MainWindowGrid.Background = imgBrush;
+            }
+        }
+        #endregion
 
-        public string currentTrack;
+        #endregion
 
-        // -- Audio Controls -- //
+        
+        #region Controls
         private void btnPlayTrack_Click(object sender, RoutedEventArgs e)
         {
             if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
@@ -270,7 +296,7 @@ namespace Musick
 
         private void btnPreviousTrack_Click(object sender, RoutedEventArgs e)
         {
-            // Play previous track - only useful when i get to making a library
+            DoGetPreviousSong();
         }
 
         private void btnNextTrack_Click(object sender, RoutedEventArgs e)
@@ -281,9 +307,94 @@ namespace Musick
         #endregion
 
 
-        #region The nightmare that is albumArt/UI continuity
-        
-        private BitmapImage currentAlbumArtBMI;
+        #region Progress Slider
+
+        private DispatcherTimer mediaTimer;
+        void mediaTimer_Tick(object sender, EventArgs e)
+        {
+            if ((mediaPlayer.Source != null) && (mediaPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
+            {
+                sliProgress.Minimum = 0;
+                sliProgress.Maximum = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+                sliProgress.Value = mediaPlayer.Position.TotalSeconds;
+                if (mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds == mediaPlayer.Position.TotalSeconds)
+                {
+                    // This happens when you reach the end of the track.
+                    DoGetNextSong();
+                }
+            }
+        }
+
+        private void sliProgress_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            userIsDraggingSlider = true;
+        }
+
+        private void sliProgress_DragCompleted(object sender, DragCompletedEventArgs e)
+        {
+            userIsDraggingSlider = false;
+            mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
+        }
+
+        private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
+            mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
+        }
+        #endregion
+
+
+        #region Volume Controls and Values
+        // -- Volume Controls -- //
+        private void volumeBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            mediaPlayer.Volume = volumeBar.Value;
+        }
+
+        #endregion
+
+
+        #region Window Hotkeys
+        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.H && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
+            {
+                this.ShowTitleBar = !this.ShowTitleBar;
+                if(playerMenu.Visibility == Visibility.Visible)
+                {
+                    playerMenu.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    playerMenu.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region Menu Items
+        public MusickLibrary Library = new MusickLibrary();       
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {          
+            if(Library.IsVisible)
+            {
+                Library.Hide();
+            }
+            else
+            {
+                Library.Owner = this;
+                Library.Show();
+                Library.Activate();
+            }
+        }
+
+
+        #endregion
+
+
+        #region Legacy UI Continuity crap - Massive needless performance sink        
         /*
         // Convert the currently displayed album art to a bitmap so I can use it for UI stuff.
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
@@ -362,86 +473,5 @@ namespace Musick
         }
         */
         #endregion
-
-
-        #region Progress Slider
-
-        private DispatcherTimer mediaTimer;
-        void mediaTimer_Tick(object sender, EventArgs e)
-        {
-            if ((mediaPlayer.Source != null) && (mediaPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
-            {
-                sliProgress.Minimum = 0;
-                sliProgress.Maximum = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
-                sliProgress.Value = mediaPlayer.Position.TotalSeconds;
-                if (mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds == mediaPlayer.Position.TotalSeconds)
-                {
-                    // This happens when you reach the end of the track.
-                    DoGetNextSong();
-                }
-            }
-        }
-
-        private void sliProgress_DragStarted(object sender, DragStartedEventArgs e)
-        {
-            userIsDraggingSlider = true;
-        }
-
-        private void sliProgress_DragCompleted(object sender, DragCompletedEventArgs e)
-        {
-            userIsDraggingSlider = false;
-            mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
-        }
-
-        private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
-            mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
-        }
-        #endregion
-
-
-        #region Volume Controls and Values
-        // -- Volume Controls -- //
-        private void volumeBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            mediaPlayer.Volume = volumeBar.Value;
-        }
-
-        #endregion
-
-
-        #region Window Hotkeys
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.H && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
-            {
-                this.ShowTitleBar = !this.ShowTitleBar;
-                if(playerMenu.Visibility == Visibility.Visible)
-                {
-                    playerMenu.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    playerMenu.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
-        #endregion
-
-
-        #region Menu Items
-        public MusickLibrary Library = new MusickLibrary();
-        
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Library.Owner = this;
-            Library.Show();
-        }
-
-        #endregion
-
-
     }
 }

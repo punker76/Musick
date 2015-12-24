@@ -22,6 +22,7 @@ namespace Musick.Musick_Classes
 
         public Song(string filelocation, string songtitle, string songartist, string songalbum, string songgenre, string songyear)
         {
+
             FileLocation = filelocation;
             SongTitle = songtitle;
             SongArtist = songartist;

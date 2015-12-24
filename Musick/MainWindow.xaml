@@ -7,7 +7,8 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
         Title="Musick - Player" 
-        SizeToContent="WidthAndHeight" 
+        SizeToContent="Height"
+        Width="350"
         WindowTransitionsEnabled="False"
         MouseMove="MetroWindow_MouseMove"
         MouseLeave="MetroWindow_MouseLeave"
@@ -30,7 +31,8 @@
               MouseLeave="playerMenu_MouseLeave">
             <MenuItem Header="Windows">
                 <MenuItem Header="Library"
-                          Click="MenuItem_Click"/>
+                          Click="MenuItem_Click"
+                          IsCheckable="True"/>
             </MenuItem>
         </Menu>
 

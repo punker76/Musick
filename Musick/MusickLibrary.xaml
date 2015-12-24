@@ -6,29 +6,23 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="MusickLibrary" SizeToContent="WidthAndHeight">
-    <Controls:MetroWindow.RightWindowCommands>
-        <Controls:WindowCommands>
-            <Button x:Name="btnBrowse"
-                Content="Browse"
-                Click="btnBrowse_Click"/>
-        </Controls:WindowCommands>
-    </Controls:MetroWindow.RightWindowCommands>
+        Title="Musick - Library" x:Name="LibraryWindow" IsMinButtonEnabled="False" IsMaxRestoreButtonEnabled="False" IsCloseButtonEnabled="False" TitleCaps="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowActivated="False">
     <Grid>
 
         <DataGrid x:Name="dtgLibrary"
-                  HorizontalAlignment="Center"
+                  HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   ItemsSource="{Binding}"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
+                  
                   MouseDoubleClick="dtgLibrary_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Title" Binding="{Binding SongTitle}"/>
-                <DataGridTextColumn Header="Artist" Binding="{Binding SongArtist}"/>
-                <DataGridTextColumn Header="Album" Binding="{Binding SongAlbum}"/>
-                <DataGridTextColumn Header="Genre" Binding="{Binding SongGenre}"/>
-                <DataGridTextColumn Header="Year" Binding="{Binding SongYear}"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding SongTitle}" Width="*"/>
+                <DataGridTextColumn Header="Artist" Binding="{Binding SongArtist}" Width="*"/>
+                <DataGridTextColumn Header="Album" Binding="{Binding SongAlbum}" Width="*"/>
+                <DataGridTextColumn Header="Genre" Binding="{Binding SongGenre}" Width="*"/>
+                <DataGridTextColumn Header="Year" Binding="{Binding SongYear}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
