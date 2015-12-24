@@ -78,6 +78,25 @@ namespace Musick
             }
         }
 
+        public void NextSong()
+        {
+            dtgLibrary.SelectedIndex++;
+            Song currentObject = (Song)dtgLibrary.SelectedItem;
+            var mainWindow = this.Owner as MainWindow;
+            mainWindow.DoLoadSongFromLibrary(currentObject);
+        }
+
+        public void RandomSong()
+        {
+            Random rnd = new Random();
+            int randomTrack = rnd.Next(0, dtgLibrary.Items.Count);
+            dtgLibrary.SelectedIndex = randomTrack;
+            Song currentObject = (Song)dtgLibrary.SelectedItem;
+            var mainWindow = this.Owner as MainWindow;
+            mainWindow.DoLoadSongFromLibrary(currentObject);
+
+        }
+
         private void dtgLibrary_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Song currentObject = (Song)dtgLibrary.SelectedItem;

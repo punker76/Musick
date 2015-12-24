@@ -19,7 +19,9 @@
         KeyDown="MetroWindow_KeyDown" 
         TitleCaps="False">
     
-    <Grid x:Name="MainWindowGrid">
+    <Grid x:Name="MainWindowGrid"
+          Height="350"
+          Width="350">
         <Menu x:Name="playerMenu"
               VerticalAlignment="Top"
               HorizontalAlignment="Stretch"
@@ -32,7 +34,7 @@
             </MenuItem>
         </Menu>
 
-        <Grid x:Name="AudioControlGrid" Width="350" Height="350" MouseEnter="AudioControlGrid_MouseEnter" MouseLeave="AudioControlGrid_MouseLeave">
+        <Grid x:Name="AudioControlGrid" MouseEnter="AudioControlGrid_MouseEnter" MouseLeave="AudioControlGrid_MouseLeave">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="40"/>
@@ -85,8 +87,8 @@
                     HorizontalAlignment="Left"
                     VerticalAlignment="Bottom"
                     Margin="5,5,5,5">
-                    <Button x:Name="btnBrowseTrack"
-                    Click="btnBrowseTrack_Click"
+                    <Button x:Name="btnShuffle"
+                    Click="btnShuffle_Click"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Width="30"
@@ -94,11 +96,26 @@
                     Style="{DynamicResource SquareButtonStyle}">
                         <Rectangle Width="15"
                            Height="15"
-                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}">
-                            <Rectangle.OpacityMask>
-                                <VisualBrush Stretch="Uniform"
-                                     Visual="{StaticResource appbar_folder}" />
-                            </Rectangle.OpacityMask>
+                           Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                   x:Name="shuffleButtonVisual">
+                            <Rectangle.Style>
+                                <Style TargetType="{x:Type Rectangle}">
+                                    <Setter Property="OpacityMask">
+                                        <Setter.Value>
+                                            <VisualBrush Stretch="Uniform" Opacity="0.5" Visual="{StaticResource appbar_shuffle}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="OpacityMask">
+                                                <Setter.Value>
+                                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_shuffle}" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Rectangle.Style>
                         </Rectangle>
                     </Button>
                 </StackPanel>

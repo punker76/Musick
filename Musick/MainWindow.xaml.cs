@@ -59,6 +59,10 @@ namespace Musick
             timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.0) };
             timer.Tick += timer_Tick;
 
+            // Shuffle enabled default.
+            shuffleButtonVisual.IsEnabled = true;
+            shuffleIsEnabled = false;
+
             // Timer for the playing of media.
             mediaTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.1) };
             mediaTimer.Tick += mediaTimer_Tick;
@@ -76,7 +80,7 @@ namespace Musick
 
         public void DoSetWindowTitle(Song song)
         {
-            this.Title = song.SongTitle + song.SongArtist;
+            this.Title = song.SongTitle+ " - " +song.SongArtist;
         }
 
         public void DoSetAlbumArt(Song song)
@@ -110,6 +114,19 @@ namespace Musick
                 mediaPlayerIsPlaying = true;
                 playButtonVisual.IsEnabled = false;
                 sliProgress.IsEnabled = true;
+            }
+        }
+
+        private bool shuffleIsEnabled;
+        public void DoGetNextSong()
+        {
+            if(shuffleIsEnabled == true)
+            {
+                Library.RandomSong();
+            }
+            else if (shuffleIsEnabled == false)
+            {
+                Library.NextSong();
             }
         }
 
@@ -211,7 +228,12 @@ namespace Musick
                 mediaPlayerIsPlaying = false;
                 playButtonVisual.IsEnabled = true;
             }
+        }
 
+        private void btnShuffle_Click(object sender, RoutedEventArgs e)
+        {
+            shuffleIsEnabled = !shuffleIsEnabled;
+            shuffleButtonVisual.IsEnabled = !shuffleButtonVisual.IsEnabled;            
         }
 
         private void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
@@ -253,39 +275,9 @@ namespace Musick
 
         private void btnNextTrack_Click(object sender, RoutedEventArgs e)
         {
-            // Play next track - only useful when I actually get to making a library
+            DoGetNextSong();
         }
 
-        private void btnBrowseTrack_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openMusicFileDialog = new OpenFileDialog();
-            openMusicFileDialog.Filter = "Music Files(*.MP3;*.WAV;*.OGG)|*.MP3;*.WAV;*.OGG";
-            openMusicFileDialog.FilterIndex = 1;
-            openMusicFileDialog.Multiselect = false;
-            if (openMusicFileDialog.ShowDialog() == true)
-            {
-                currentTrack = openMusicFileDialog.FileName.ToString();
-                mediaPlayer.Open(new Uri(currentTrack));
-
-                TagLib.File f = new TagLib.Mpeg.AudioFile(currentTrack);
-                if (f.Tag.Pictures.Length > 0)
-                {
-                    TagLib.IPicture pic = f.Tag.Pictures[0];
-                    MemoryStream ms = new MemoryStream(pic.Data.Data);
-                    if (ms != null && ms.Length > 4096)
-                        ms.Seek(0, SeekOrigin.Begin);
-                    {
-                        currentAlbumArtBMI = new BitmapImage();
-                        currentAlbumArtBMI.BeginInit();
-                        currentAlbumArtBMI.StreamSource = ms;
-                        currentAlbumArtBMI.EndInit();
-                    }
-                    ImageBrush imgBrush = new ImageBrush();
-                    imgBrush.ImageSource = currentAlbumArtBMI;
-                    MainWindowGrid.Background = imgBrush;                    
-                }
-            }
-        }
         #endregion
 
 
@@ -385,8 +377,7 @@ namespace Musick
                 if (mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds == mediaPlayer.Position.TotalSeconds)
                 {
                     // This happens when you reach the end of the track.
-                    mediaPlayer.Stop();
-                    sliProgress.IsEnabled = false;
+                    DoGetNextSong();
                 }
             }
         }
@@ -441,12 +432,14 @@ namespace Musick
 
 
         #region Menu Items
+        public MusickLibrary Library = new MusickLibrary();
+        
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            MusickLibrary newLibrary = new MusickLibrary();
-            newLibrary.Owner = this;
-            newLibrary.Show();
+            Library.Owner = this;
+            Library.Show();
         }
+
         #endregion
 
 
