@@ -33,11 +33,16 @@ namespace Musick
     /// </summary>
     public partial class MainWindow
     {
-        
+        #region Variables
+
         public MediaPlayer mediaPlayer = new MediaPlayer();
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
         
+
+        #endregion
+
+
         public MainWindow()
         {
             InitializeComponent();

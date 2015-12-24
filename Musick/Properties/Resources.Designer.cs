@@ -63,6 +63,16 @@ namespace Musick.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap MusickLogo {
+            get {
+                object obj = ResourceManager.GetObject("MusickLogo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PLACEHOLDER {
             get {
                 object obj = ResourceManager.GetObject("PLACEHOLDER", resourceCulture);

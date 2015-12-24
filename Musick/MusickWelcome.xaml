@@ -1,0 +1,38 @@
+﻿<Controls:MetroWindow x:Class="Musick.MusickWelcome"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:Musick"
+        mc:Ignorable="d"
+        Title="Musick - Welcome" x:Name="MusickLoading" Height="250" Width="450" ShowTitleBar="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ResizeMode="NoResize" Loaded="MusickWelcome_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.9*"/>
+            <RowDefinition Height="0.4*"/>
+            <RowDefinition Height="0.75*"/>
+        </Grid.RowDefinitions>
+        <Image x:Name="imgLogo"
+               Grid.Row="0"
+               Height="50" 
+               Stretch="Uniform"
+               Source="Resources/MusickLogo.png" 
+               HorizontalAlignment="Center"
+               VerticalAlignment="Top"
+               Margin="0,40,0,0"  
+               Opacity="0.5"/>
+        <Controls:ProgressRing Width="40"
+                               Height="40"
+                               Grid.Row="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Bottom"
+                               Margin="20"
+                               IsActive="True"/>
+        <Label x:Name="lblStatus"
+               Grid.Row="1"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Bottom"
+               Opacity="0.5"/>
+    </Grid>
+</Controls:MetroWindow>

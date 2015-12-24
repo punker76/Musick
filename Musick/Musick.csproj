@@ -115,6 +115,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MusickWelcome.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Icons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -127,6 +131,10 @@
     <Compile Include="MusickSettings.xaml.cs">
       <DependentUpon>MusickSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MusickWelcome.xaml.cs">
+      <DependentUpon>MusickWelcome.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Musick_Classes\ConfigClass.cs" />
     <Compile Include="Musick_Classes\DataObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -170,6 +178,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Musick.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\MusickLogo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Fody.1.28.3\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.3\build\Fody.targets')" />
