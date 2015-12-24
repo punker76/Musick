@@ -63,5 +63,12 @@ namespace Musick
                 }
             }
         }
+
+        private void dtgLibrary_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Song currentObject = (Song)dtgLibrary.SelectedItem;
+            var mainWindow = this.Owner as MainWindow;           
+            mainWindow.DoLoadSongFromLibrary(currentObject);
+        }
     }
 }

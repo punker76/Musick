@@ -21,7 +21,8 @@
                   VerticalAlignment="Stretch"
                   ItemsSource="{Binding}"
                   IsReadOnly="True"
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  MouseDoubleClick="dtgLibrary_MouseDoubleClick">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Title" Binding="{Binding SongTitle}"/>
                 <DataGridTextColumn Header="Artist" Binding="{Binding SongArtist}"/>

@@ -23,6 +23,7 @@ using System.Drawing;
 using MColor = System.Windows.Media.Color;
 using DColor = System.Drawing.Color;
 using System.ComponentModel;
+using Musick.Musick_Classes;
 
 namespace Musick
 {
@@ -33,7 +34,7 @@ namespace Musick
     {
 
                 
-        public string currentTrack;
+        
         public MediaPlayer mediaPlayer = new MediaPlayer();
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
@@ -64,7 +65,47 @@ namespace Musick
             mediaTimer.Start();
         }
 
+        public void DoLoadSongFromLibrary(Song song)
+        {
+            mediaPlayer.Open(new Uri(song.FileLocation));
+            mediaPlayerIsPlaying = false;
+            DoSetAlbumArt(song);
+            DoPlaySong();
+        }
 
+        public void DoSetAlbumArt(Song song)
+        {
+            currentTrack = song.FileLocation;
+
+            TagLib.File f = new TagLib.Mpeg.AudioFile(currentTrack);
+            if (f.Tag.Pictures.Length > 0)
+            {
+                TagLib.IPicture pic = f.Tag.Pictures[0];
+                MemoryStream ms = new MemoryStream(pic.Data.Data);
+                if (ms != null && ms.Length > 4096)
+                    ms.Seek(0, SeekOrigin.Begin);
+                {
+                    currentAlbumArtBMI = new BitmapImage();
+                    currentAlbumArtBMI.BeginInit();
+                    currentAlbumArtBMI.StreamSource = ms;
+                    currentAlbumArtBMI.EndInit();
+                }
+                ImageBrush imgBrush = new ImageBrush();
+                imgBrush.ImageSource = currentAlbumArtBMI;
+                MainWindowGrid.Background = imgBrush;
+            }
+        }
+
+        public void DoPlaySong()
+        {
+            if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
+            {
+                mediaPlayer.Play();
+                mediaPlayerIsPlaying = true;
+                playButtonVisual.IsEnabled = false;
+                sliProgress.IsEnabled = true;
+            }
+        }
 
         #region UI Animation shit.
 
@@ -144,19 +185,18 @@ namespace Musick
             }
         }
         #endregion
-        
+
 
         #region Audio Controls.
+
+        public string currentTrack;
 
         // -- Audio Controls -- //
         private void btnPlayTrack_Click(object sender, RoutedEventArgs e)
         {
             if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
             {
-                mediaPlayer.Play();
-                mediaPlayerIsPlaying = true;
-                playButtonVisual.IsEnabled = false;
-                sliProgress.IsEnabled = true;
+                DoPlaySong();
             }
 
             else if (mediaPlayerIsPlaying == true)
@@ -166,6 +206,12 @@ namespace Musick
                 playButtonVisual.IsEnabled = true;
             }
 
+        }
+
+        private void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
+        {
+            isUsingControls = false;
+            timer.Start();
         }
 
         private void btnVolume_Click(object sender, RoutedEventArgs e)
@@ -228,9 +274,6 @@ namespace Musick
                         currentAlbumArtBMI.StreamSource = ms;
                         currentAlbumArtBMI.EndInit();
                     }
-                    //Bitmap currentAlbumArt = BitmapImage2Bitmap(currentAlbumArtBMI);
-                    //lblProgressStatus.Foreground = new SolidColorBrush(ContrastColourfromDominantColour(currentAlbumArt).foregroundColour);
-                    //lblProgressStatus.Background = new SolidColorBrush(ContrastColourfromDominantColour(currentAlbumArt).backgroundColour);
                     ImageBrush imgBrush = new ImageBrush();
                     imgBrush.ImageSource = currentAlbumArtBMI;
                     MainWindowGrid.Background = imgBrush;                    
@@ -390,12 +433,16 @@ namespace Musick
 
         #endregion
 
+
         #region Menu Items
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             MusickLibrary newLibrary = new MusickLibrary();
+            newLibrary.Owner = this;
             newLibrary.Show();
         }
         #endregion
+
+
     }
 }
