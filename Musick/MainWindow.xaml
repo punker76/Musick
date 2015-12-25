@@ -19,33 +19,33 @@
         ShowIconOnTitleBar="False"
         KeyDown="MetroWindow_KeyDown" 
         TitleCaps="False">
-    
+
     <Grid x:Name="MainWindowGrid"
           Height="350"
           Width="350">
-        <Menu x:Name="playerMenu"
-              VerticalAlignment="Top"
-              HorizontalAlignment="Stretch"
-              Height="30"
-              MouseEnter="playerMenu_MouseEnter"
-              MouseLeave="playerMenu_MouseLeave">
-            <MenuItem Header="Windows">
-                <MenuItem Header="Library"
-                          Click="LibraryItem_Click"
-                          IsCheckable="True"/>
-                <MenuItem Header="Settings"
-                          Click="SettingsItem_Click"
-                          IsCheckable="True"/>
-            </MenuItem>
-        </Menu>
-
         <Grid x:Name="AudioControlGrid" MouseEnter="AudioControlGrid_MouseEnter" MouseLeave="AudioControlGrid_MouseLeave">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-
+            
+            <Menu x:Name="playerMenu"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"
+              Height="30"
+              MouseEnter="playerMenu_MouseEnter"
+              MouseLeave="playerMenu_MouseLeave">
+                <MenuItem Header="Windows">
+                    <MenuItem Header="Library"
+                          Click="LibraryItem_Click"
+                          IsCheckable="True"/>
+                    <MenuItem Header="Settings"
+                          Click="SettingsItem_Click"
+                          IsCheckable="True"/>
+                </MenuItem>
+            </Menu>
+            
             <StatusBar Grid.Row="1">
                 <StatusBar.Background>
                     <SolidColorBrush Opacity="0"/>

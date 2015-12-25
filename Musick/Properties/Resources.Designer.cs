@@ -73,9 +73,9 @@ namespace Musick.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap PLACEHOLDER {
+        internal static System.Drawing.Bitmap NoAlbumArt {
             get {
-                object obj = ResourceManager.GetObject("PLACEHOLDER", resourceCulture);
+                object obj = ResourceManager.GetObject("NoAlbumArt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro;
+using System.Text.RegularExpressions;
 
 namespace Musick
 {
@@ -23,13 +24,39 @@ namespace Musick
         public MusickInputLibraryName()
         {
             InitializeComponent();
+            this.Left = SystemParameters.PrimaryScreenWidth / 2 - this.Width/2;
+            this.Top = SystemParameters.PrimaryScreenHeight / 2 + 120;
         }
 
         private void txtLibraryName_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key == Key.Enter)
             {
-                this.DialogResult = true;
+                if(LibraryNameCheck(txtLibraryName.Text))
+                {
+                    this.DialogResult = true;
+                }
+                else
+                {
+                    txtLibraryName.Clear();
+                    txtLibraryName.Focus();
+                    lblLibNameError.Visibility = Visibility.Visible;
+                }
+            }
+        }
+        private bool LibraryNameCheck(string libName)
+        {
+            {
+                if (libName.Length > 0 && libName.Length < 30)
+                {
+                    Regex regex = new Regex("^[a-z0-9_-]+$", RegexOptions.IgnoreCase);
+                    if (regex.IsMatch(libName))
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
             }
         }
     }

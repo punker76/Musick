@@ -38,6 +38,7 @@ namespace Musick
         public MediaPlayer mediaPlayer = new MediaPlayer();
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
+        public BitmapSource noAlbumArt;
         
 
         #endregion
@@ -48,6 +49,16 @@ namespace Musick
             InitializeComponent();
 
             this.DataContext = this;
+
+            var image = Properties.Resources.NoAlbumArt;
+            var bitmap = new System.Drawing.Bitmap(image);
+            noAlbumArt = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            bitmap.Dispose();
+
+            ImageBrush imgBrush = new ImageBrush();
+            imgBrush.ImageSource = noAlbumArt;
+            imgBrush.Opacity = 0.4;
+            MainWindowGrid.Background = imgBrush;
 
             // Set media voluma (user stored variable goes here) and set volumeBar to the mediaPlayer volume.
             mediaPlayer.Volume = 0.5;
@@ -227,16 +238,10 @@ namespace Musick
             }
             else
             {
-                var image = Properties.Resources.PLACEHOLDER;
-                var bitmap = new System.Drawing.Bitmap(image);
-                var bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(),
-                                                                                      IntPtr.Zero,
-                                                                                      Int32Rect.Empty,
-                                                                                      BitmapSizeOptions.FromEmptyOptions()
-                      );
-                bitmap.Dispose();
+                
                 ImageBrush imgBrush = new ImageBrush();
-                imgBrush.ImageSource = bitmapSource;
+                imgBrush.ImageSource = noAlbumArt;
+                imgBrush.Opacity = 0.4;
                 MainWindowGrid.Background = imgBrush;
             }
         }
@@ -419,6 +424,15 @@ namespace Musick
                 Settings.Show();
                 Settings.Activate();
             }
+        }
+        #endregion
+
+        #region Misc code
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Application.Current.Shutdown();
         }
         #endregion
 

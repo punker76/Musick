@@ -32,6 +32,7 @@ namespace Musick
 
         string musicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, "MusicLibrary.txt");
         static ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
+        string selectedFolder;
         string libraryName;
 
         private async void MusickWelcome_Loaded(object sender, RoutedEventArgs e)
@@ -53,12 +54,11 @@ namespace Musick
             if (isEmpty)
             {
                 lblStatus.Content = "Library not found - Please select a root folder for your music.";
-                FolderBrowserDialog selectFolder = new FolderBrowserDialog();
-                selectFolder.Description = "Library not found - Please select a root folder for your music.";
-                DialogResult result = selectFolder.ShowDialog();
-
-                if (result.ToString() == "OK")
+                MusickInputLibraryLocation folderSelectDialog = new MusickInputLibraryLocation();
+                if (folderSelectDialog.ShowDialog() == true)
                 {
+                    selectedFolder = folderSelectDialog.lblSelectedFolder.Content.ToString();
+                    folderSelectDialog.Close();
                     MusickInputLibraryName libraryNameDialog = new MusickInputLibraryName();
 
                     // Show testDialog as a modal dialog and determine if true.
@@ -72,7 +72,7 @@ namespace Musick
                     Directory.CreateDirectory(ConfigClass.appDataFolder);
                     Directory.CreateDirectory(ConfigClass.appLibraryFolder);
                     Directory.CreateDirectory(ConfigClass.appSettingsFolder);                                   
-                    await DoGenerateLibrary(selectFolder.SelectedPath);
+                    await DoGenerateLibrary(selectedFolder);
                     return "Library not found - Generating from path...";
                 }
                 else

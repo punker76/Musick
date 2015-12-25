@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="MusickInputLibraryName" Height="100" Width="300" Icon="Musick.ico" ShowTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowStartupLocation="CenterScreen">
+        Title="MusickInputLibraryName" Height="80" Width="450" Icon="Musick.ico" ShowTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowStartupLocation="Manual" IsWindowDraggable="False" IsCloseButtonEnabled="False" WindowTransitionsEnabled="False">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -23,5 +23,13 @@
                  VerticalAlignment="Center"
                  Controls:TextBoxHelper.Watermark="E.G. 'My Library'"
                  KeyDown="txtLibraryName_KeyDown"/>
+        <Label x:Name="lblLibNameError"
+               Content="X"
+               Grid.Row="1"
+               HorizontalAlignment="Right"
+               Margin="0,0,5,0"
+               Foreground="Red"
+               ToolTip="Library name must contain only A-Z | 0-9 | _ | - (No Spaces)"
+               Visibility="Hidden"/>
     </Grid>
 </Controls:MetroWindow>
