@@ -379,11 +379,16 @@ namespace Musick
         #endregion
 
 
-        #region Menu Items
+        #region Window Controls
         public MusickLibrary Library = new MusickLibrary();       
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {          
-            if(Library.IsVisible)
+        private void LibraryItem_Click(object sender, RoutedEventArgs e)
+        {
+            DoLibraryControl();
+        }
+
+        private void DoLibraryControl()
+        {
+            if (Library.IsVisible)
             {
                 Library.Hide();
             }
@@ -396,8 +401,26 @@ namespace Musick
         }
 
 
-        #endregion
+        public MusickSettings Settings = new MusickSettings();
+        private void SettingsItem_Click(object sender, RoutedEventArgs e)
+        {
+            DoSettingsControl();
+        }
 
+        private void DoSettingsControl()
+        {
+            if (Settings.IsVisible)
+            {
+                Settings.Hide();
+            }
+            else
+            {
+                Settings.Owner = this;
+                Settings.Show();
+                Settings.Activate();
+            }
+        }
+        #endregion
 
         #region Legacy UI Continuity crap - Massive needless performance sink        
         /*
@@ -478,5 +501,7 @@ namespace Musick
         }
         */
         #endregion
+
+
     }
 }

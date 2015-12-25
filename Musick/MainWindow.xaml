@@ -31,7 +31,10 @@
               MouseLeave="playerMenu_MouseLeave">
             <MenuItem Header="Windows">
                 <MenuItem Header="Library"
-                          Click="MenuItem_Click"
+                          Click="LibraryItem_Click"
+                          IsCheckable="True"/>
+                <MenuItem Header="Settings"
+                          Click="SettingsItem_Click"
                           IsCheckable="True"/>
             </MenuItem>
         </Menu>

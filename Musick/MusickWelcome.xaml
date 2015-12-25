@@ -6,7 +6,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:local="clr-namespace:Musick"
         mc:Ignorable="d"
-        Title="Musick - Welcome" x:Name="MusickLoading" Height="250" Width="450" ShowTitleBar="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ResizeMode="NoResize" Loaded="MusickWelcome_Loaded" Icon="Musick.ico">
+        Title="Musick - Welcome" x:Name="MusickLoading" Height="250" Width="450" ShowTitleBar="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ResizeMode="NoResize" IsWindowDraggable="False" WindowStartupLocation="CenterScreen" Loaded="MusickWelcome_Loaded" Icon="Musick.ico">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>

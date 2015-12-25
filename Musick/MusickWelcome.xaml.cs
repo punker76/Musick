@@ -30,8 +30,9 @@ namespace Musick
             InitializeComponent();
         }
 
-        string musicLibraryFile = System.IO.Path.Combine(ConfigClass.appDataFolder, "MusicLibrary.txt");
-        ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
+        string musicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, "MusicLibrary.txt");
+        static ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
+        string libraryName;
 
         private async void MusickWelcome_Loaded(object sender, RoutedEventArgs e)
         {
@@ -41,24 +42,36 @@ namespace Musick
             lblStatus.Content = "Loading Musick...";
             await Task.Delay(1000);
             MainWindow newWin = new MainWindow();
-            newWin.Show();
+            newWin.Show();           
             this.Close();             
         }
 
+        // Checks for an existing library, if none exists create folders and call library gen method, if one does exist then it loads it up.
         private async Task<string> DoLibraryCheck()
         {
-            if (!System.IO.File.Exists(musicLibraryFile))
+            bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appLibraryFolder).Any();
+            if (isEmpty)
             {
                 lblStatus.Content = "Library not found - Please select a root folder for your music.";
-                Directory.CreateDirectory(ConfigClass.appDataFolder);
                 FolderBrowserDialog selectFolder = new FolderBrowserDialog();
                 selectFolder.Description = "Library not found - Please select a root folder for your music.";
                 DialogResult result = selectFolder.ShowDialog();
 
                 if (result.ToString() == "OK")
                 {
+                    MusickInputLibraryName libraryNameDialog = new MusickInputLibraryName();
+
+                    // Show testDialog as a modal dialog and determine if true.
+                    if (libraryNameDialog.ShowDialog() == true)
+                    {
+                        // Read the contents of testDialog's TextBox.
+                        this.libraryName = libraryNameDialog.txtLibraryName.Text + ".txt";
+                    }
+                    
                     lblStatus.Content = "Generating library from selected folder...";
-                    await Task.Delay(1500);                 
+                    Directory.CreateDirectory(ConfigClass.appDataFolder);
+                    Directory.CreateDirectory(ConfigClass.appLibraryFolder);
+                    Directory.CreateDirectory(ConfigClass.appSettingsFolder);                                   
                     await DoGenerateLibrary(selectFolder.SelectedPath);
                     return "Library not found - Generating from path...";
                 }
@@ -102,10 +115,10 @@ namespace Musick
                 }
 
                 MusickLibrary.SongList = tempSongList;
-
+                string tempMusicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, libraryName);
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
-                using (StreamWriter sw = new StreamWriter(musicLibraryFile))
+                using (StreamWriter sw = new StreamWriter(tempMusicLibraryFile))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
                     serializer.Serialize(writer, tempSongList);
@@ -113,6 +126,7 @@ namespace Musick
             }
             );
             lblStatus.Content = "Library Generated";
+            await Task.Delay(1000);
             return "Library Generated!";
         }
 
@@ -122,15 +136,24 @@ namespace Musick
             await Task.Run(() =>
             {
                 JsonSerializer serializer = new JsonSerializer();
-                using (StreamReader sr = System.IO.File.OpenText(musicLibraryFile))
-                using (JsonTextReader jsonTR = new JsonTextReader(sr))
+                foreach (var file in Directory.GetFiles(ConfigClass.appLibraryFolder))
                 {
-                    tempSongList = serializer.Deserialize<ObservableCollection<Song>>(jsonTR);
+                    ObservableCollection<Song> tempLibrary = new ObservableCollection<Song>();
+                    using (StreamReader sr = System.IO.File.OpenText(file))
+                    using (JsonTextReader jsonTR = new JsonTextReader(sr))
+                    {
+                        tempLibrary = serializer.Deserialize<ObservableCollection<Song>>(jsonTR);
+                    }
+                    foreach(var song in tempLibrary)
+                    {
+                        tempSongList.Add(song);
+                    }
                 }
-                MusickLibrary.SongList = tempSongList;
+
             }
             );
-            lblStatus.Content = "Library loaded.";
+            MusickLibrary.SongList = tempSongList;
+            lblStatus.Content = "Library loaded.";           
             await Task.Delay(1000);
             return "Library Loaded!";
         }

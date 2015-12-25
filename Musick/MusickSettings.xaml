@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="MusickSettings" Height="300" Width="300">
+        Title="Musick - Settings" TitleCaps="False" Height="300" Width="300" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False">
     <Grid>
         
     </Grid>
