@@ -21,7 +21,7 @@
                  Grid.Row="1"
                  Margin="5,5,5,5"
                  VerticalAlignment="Center"
-                 Controls:TextBoxHelper.Watermark="E.G. 'My Library'"
+                 Controls:TextBoxHelper.Watermark="E.G. 'MyLibrary'"
                  KeyDown="txtLibraryName_KeyDown"/>
         <Label x:Name="lblLibNameError"
                Content="X"

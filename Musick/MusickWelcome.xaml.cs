@@ -50,6 +50,9 @@ namespace Musick
         // Checks for an existing library, if none exists create folders and call library gen method, if one does exist then it loads it up.
         private async Task<string> DoLibraryCheck()
         {
+            Directory.CreateDirectory(ConfigClass.appDataFolder);
+            Directory.CreateDirectory(ConfigClass.appLibraryFolder);
+            Directory.CreateDirectory(ConfigClass.appSettingsFolder);
             bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appLibraryFolder).Any();
             if (isEmpty)
             {
@@ -68,10 +71,7 @@ namespace Musick
                         this.libraryName = libraryNameDialog.txtLibraryName.Text + ".txt";
                     }
                     
-                    lblStatus.Content = "Generating library from selected folder...";
-                    Directory.CreateDirectory(ConfigClass.appDataFolder);
-                    Directory.CreateDirectory(ConfigClass.appLibraryFolder);
-                    Directory.CreateDirectory(ConfigClass.appSettingsFolder);                                   
+                    lblStatus.Content = "Generating library from selected folder...";                                 
                     await DoGenerateLibrary(selectedFolder);
                     return "Library not found - Generating from path...";
                 }
@@ -100,17 +100,7 @@ namespace Musick
                 {
                     if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav") || file.Contains(".ogg"))
                     {
-                        string tempYear;
-                        var tempFile = TagLib.File.Create(file);
-                        if (tempFile.Tag.Year == 0)
-                        {
-                            tempYear = "";
-                        }
-                        else
-                        {
-                            tempYear = tempFile.Tag.Year.ToString();
-                        }
-                        tempSongList.Add(new Song(file.ToString(), tempFile.Tag.Title, tempFile.Tag.FirstPerformer, tempFile.Tag.Album, tempFile.Tag.FirstGenre, tempYear));
+                        tempSongList.Add(CreateSong.Create(file));                      
                     }
                 }
 

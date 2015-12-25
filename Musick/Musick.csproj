@@ -149,6 +149,7 @@
       <DependentUpon>MusickWelcome.xaml</DependentUpon>
     </Compile>
     <Compile Include="Musick_Classes\ConfigClass.cs" />
+    <Compile Include="Musick_Classes\CreateSong.cs" />
     <Compile Include="Musick_Classes\DataObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
