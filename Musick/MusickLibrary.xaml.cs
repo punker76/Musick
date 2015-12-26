@@ -29,50 +29,56 @@ namespace Musick
     public partial class MusickLibrary
     {
         public MusickLibrary()
-        {           
+        {
             InitializeComponent();
 
             this.DataContext = this;
             dtgLibrary.ItemsSource = SongList;
         }
 
-        
+
         public static ObservableCollection<Song> SongList;
 
 
         #region song selection.
-        public void NextSong()
+        public Song NextSong()
         {
             dtgLibrary.SelectedIndex++;
             Song currentObject = (Song)dtgLibrary.SelectedItem;
-            var mainWindow = this.Owner as MainWindow;
-            mainWindow.DoLoadSongFromLibrary(currentObject);
+
+            return currentObject;
         }
 
-        public void PreviousSong()
+        public Song PreviousSong()
         {
             dtgLibrary.SelectedIndex--;
             Song currentObject = (Song)dtgLibrary.SelectedItem;
-            var mainWindow = this.Owner as MainWindow;
-            mainWindow.DoLoadSongFromLibrary(currentObject);
+            return currentObject;
         }
 
-        public void RandomSong()
+        public Song RandomSong()
         {
             Random rnd = new Random();
             int randomTrack = rnd.Next(0, dtgLibrary.Items.Count);
             dtgLibrary.SelectedIndex = randomTrack;
             Song currentObject = (Song)dtgLibrary.SelectedItem;
-            var mainWindow = this.Owner as MainWindow;
-            mainWindow.DoLoadSongFromLibrary(currentObject);
-
+            return currentObject;
         }
+
 
         private void dtgLibrary_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Song currentObject = (Song)dtgLibrary.SelectedItem;
-            var mainWindow = this.Owner as MainWindow;           
-            mainWindow.DoLoadSongFromLibrary(currentObject);
+        }
+        #endregion
+
+        #region Window Hotkeys.
+        private void LibraryWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.H && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
+            {
+                this.ShowTitleBar = !this.ShowTitleBar;
+            }
         }
         #endregion
 

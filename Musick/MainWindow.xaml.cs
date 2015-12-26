@@ -35,7 +35,7 @@ namespace Musick
     {
         #region Variables
 
-        public MediaPlayer mediaPlayer = new MediaPlayer();
+        public static MediaPlayer mediaPlayer = new MediaPlayer();
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
         public BitmapSource noAlbumArt;
@@ -86,6 +86,8 @@ namespace Musick
 
 
         #region Actions
+
+
         public void DoLoadSongFromLibrary(Song song)
         {
             mediaPlayer.Open(new Uri(song.FileLocation));
@@ -99,9 +101,7 @@ namespace Musick
         {
             this.Title = song.SongTitle+ " - " +song.SongArtist;
         }
-
-
-
+        
         public void DoPlaySong()
         {
             if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
@@ -112,7 +112,7 @@ namespace Musick
                 sliProgress.IsEnabled = true;
             }
         }
-
+        
         private bool shuffleIsEnabled;
         public void DoGetNextSong()
         {
@@ -125,7 +125,7 @@ namespace Musick
                 Library.NextSong();
             }
         }
-
+        
         public void DoGetPreviousSong()
         {
             Library.PreviousSong();
@@ -135,7 +135,7 @@ namespace Musick
 
         #region UI
 
-        #region control Animations
+            #region control Animations
         private bool isUsingControls;
         private DispatcherTimer timer;
         void timer_Tick(object sender, EventArgs e)
@@ -330,6 +330,7 @@ namespace Musick
                 if (mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds == mediaPlayer.Position.TotalSeconds)
                 {
                     // This happens when you reach the end of the track.
+                    sliProgress.Value = 0;
                     DoGetNextSong();
                 }
             }
@@ -399,7 +400,6 @@ namespace Musick
             }
             else
             {
-                Library.Owner = this;
                 Library.Show();
                 Library.Activate();
             }
@@ -420,12 +420,12 @@ namespace Musick
             }
             else
             {
-                Settings.Owner = this;
                 Settings.Show();
                 Settings.Activate();
             }
         }
         #endregion
+
 
         #region Misc code
         protected override void OnClosed(EventArgs e)
@@ -434,7 +434,9 @@ namespace Musick
 
             Application.Current.Shutdown();
         }
+
         #endregion
+
 
         #region Legacy UI Continuity crap - Massive needless performance sink        
         /*
@@ -515,7 +517,6 @@ namespace Musick
         }
         */
         #endregion
-
 
     }
 }
