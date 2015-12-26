@@ -82,11 +82,18 @@ namespace Musick
             mediaTimer.Tick += mediaTimer_Tick;
             mediaTimer.Start();
 
+            MusickLibrary objectToSubscribeTo = Library;
+            objectToSubscribeTo.songSelected += songDoubleClicked;
         }
 
 
         #region Actions
 
+        public void songDoubleClicked(object sender, EventArgs e)
+        {
+            Song tempSong = Library.getSong();
+            DoLoadSongFromLibrary(tempSong);
+        }
 
         public void DoLoadSongFromLibrary(Song song)
         {
@@ -118,17 +125,20 @@ namespace Musick
         {
             if(shuffleIsEnabled == true)
             {
-                Library.RandomSong();
+                Song tempSong = Library.RandomSong();
+                DoLoadSongFromLibrary(tempSong);
             }
             else if (shuffleIsEnabled == false)
             {
-                Library.NextSong();
+                Song tempSong = Library.NextSong();
+                DoLoadSongFromLibrary(tempSong);
             }
         }
         
         public void DoGetPreviousSong()
         {
-            Library.PreviousSong();
+            Song tempSong = Library.PreviousSong();
+            DoLoadSongFromLibrary(tempSong);
         }
         #endregion
 

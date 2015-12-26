@@ -65,10 +65,17 @@ namespace Musick
             return currentObject;
         }
 
-
-        private void dtgLibrary_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public Song getSong()
         {
             Song currentObject = (Song)dtgLibrary.SelectedItem;
+            return currentObject;
+        }
+
+        public event EventHandler songSelected;
+        public void dtgLibrary_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (songSelected != null)
+                songSelected(this, null);
         }
         #endregion
 
