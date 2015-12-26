@@ -119,27 +119,7 @@ namespace Musick
                 sliProgress.IsEnabled = true;
             }
         }
-        
-        private bool shuffleIsEnabled;
-        public void DoGetNextSong()
-        {
-            if(shuffleIsEnabled == true)
-            {
-                Song tempSong = Library.RandomSong();
-                DoLoadSongFromLibrary(tempSong);
-            }
-            else if (shuffleIsEnabled == false)
-            {
-                Song tempSong = Library.NextSong();
-                DoLoadSongFromLibrary(tempSong);
-            }
-        }
-        
-        public void DoGetPreviousSong()
-        {
-            Song tempSong = Library.PreviousSong();
-            DoLoadSongFromLibrary(tempSong);
-        }
+         
         #endregion
 
 
@@ -276,6 +256,7 @@ namespace Musick
             }
         }
 
+        private bool shuffleIsEnabled;
         private void btnShuffle_Click(object sender, RoutedEventArgs e)
         {
             shuffleIsEnabled = !shuffleIsEnabled;
@@ -316,12 +297,26 @@ namespace Musick
 
         private void btnPreviousTrack_Click(object sender, RoutedEventArgs e)
         {
-            DoGetPreviousSong();
+            Library.PreviousSong();
+            Song tempPrevSong = Library.getSong();
+            DoLoadSongFromLibrary(tempPrevSong);
         }
+
 
         private void btnNextTrack_Click(object sender, RoutedEventArgs e)
         {
-            DoGetNextSong();
+            if (shuffleIsEnabled == true)
+            {
+                Library.RandomSong();
+                Song tempRandSong = Library.getSong();
+                DoLoadSongFromLibrary(tempRandSong);
+            }
+            else if (shuffleIsEnabled == false)
+            {
+                Library.NextSong();
+                Song tempNextSong = Library.getSong();
+                DoLoadSongFromLibrary(tempNextSong);
+            }
         }
 
         #endregion
@@ -341,7 +336,18 @@ namespace Musick
                 {
                     // This happens when you reach the end of the track.
                     sliProgress.Value = 0;
-                    DoGetNextSong();
+                    if (shuffleIsEnabled == true)
+                    {
+                        Library.RandomSong();
+                        Song tempRandSong = Library.getSong();
+                        DoLoadSongFromLibrary(tempRandSong);
+                    }
+                    else if (shuffleIsEnabled == false)
+                    {
+                        Library.NextSong();
+                        Song tempNextSong = Library.getSong();
+                        DoLoadSongFromLibrary(tempNextSong);
+                    }
                 }
             }
         }

@@ -39,41 +39,38 @@ namespace Musick
 
         public static ObservableCollection<Song> SongList;
 
+        public Song currentSong;
 
         #region song selection.
-        public Song NextSong()
+        public void NextSong()
         {
             dtgLibrary.SelectedIndex++;
-            Song currentObject = (Song)dtgLibrary.SelectedItem;
-
-            return currentObject;
+            currentSong = (Song)dtgLibrary.SelectedItem;
         }
 
-        public Song PreviousSong()
+        public void PreviousSong()
         {
             dtgLibrary.SelectedIndex--;
-            Song currentObject = (Song)dtgLibrary.SelectedItem;
-            return currentObject;
+            currentSong = (Song)dtgLibrary.SelectedItem;           
         }
 
-        public Song RandomSong()
+        public void RandomSong()
         {
             Random rnd = new Random();
             int randomTrack = rnd.Next(0, dtgLibrary.Items.Count);
             dtgLibrary.SelectedIndex = randomTrack;
-            Song currentObject = (Song)dtgLibrary.SelectedItem;
-            return currentObject;
+            currentSong = (Song)dtgLibrary.SelectedItem;            
         }
 
         public Song getSong()
-        {
-            Song currentObject = (Song)dtgLibrary.SelectedItem;
-            return currentObject;
+        {           
+            return currentSong;
         }
 
         public event EventHandler songSelected;
         public void dtgLibrary_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            currentSong = (Song)dtgLibrary.SelectedItem;
             if (songSelected != null)
                 songSelected(this, null);
         }
