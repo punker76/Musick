@@ -25,6 +25,7 @@ using DColor = System.Drawing.Color;
 using System.ComponentModel;
 using Musick.Musick_Classes;
 using System.Windows.Interop;
+using Newtonsoft.Json;
 
 namespace Musick
 {
@@ -458,7 +459,15 @@ namespace Musick
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-
+            string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
+            System.IO.File.Delete(settingsFile);
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.NullValueHandling = NullValueHandling.Ignore;
+            using (StreamWriter sw = new StreamWriter(settingsFile))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, currentSettings);
+            }
             Application.Current.Shutdown();
         }
 

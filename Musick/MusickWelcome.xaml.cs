@@ -27,7 +27,11 @@ namespace Musick
     {
         public MusickWelcome()
         {
+            Directory.CreateDirectory(ConfigClass.appDataFolder);
+            Directory.CreateDirectory(ConfigClass.appLibraryFolder);
+            Directory.CreateDirectory(ConfigClass.appSettingsFolder);
             InitializeComponent();
+            DoGetSettings();
         }
        
         static ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
@@ -37,70 +41,68 @@ namespace Musick
 
         private async void MusickWelcome_Loaded(object sender, RoutedEventArgs e)
         {
-            Directory.CreateDirectory(ConfigClass.appDataFolder);
-            Directory.CreateDirectory(ConfigClass.appLibraryFolder);
-            Directory.CreateDirectory(ConfigClass.appSettingsFolder);
-
-            lblStatus.Content = "Loading User Settings...";
-            await Task.Delay(1500);
-            await DoGetSettings();
+            lblStatus.Content = "Loading User Settings...";                 
             await Task.Delay(800);          
             lblStatus.Content = "Settings loaded...";
-            await Task.Delay(1000);
+            await Task.Delay(782);
             lblStatus.Content = "Checking for library...";
-            await Task.Delay(2000);
+            await Task.Delay(950);
             await DoLibraryCheck();
             lblStatus.Content = "Loading Musick...";
-            await Task.Delay(1000);
+            await Task.Delay(893);
             MainWindow newWin = new MainWindow();
             newWin.Show();           
             this.Close();             
         }
 
+        #region Settings
+        // Checks for existing settings file, if none exists generate a new one using the defaults.
+        private void DoGetSettings()
+        {                   
+            bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appSettingsFolder).Any(); // Check if file exists
 
+            // If file doesn't exist, generate one from the DefaultSettings class.
+            if (isEmpty)
+            {
+                UserSettings tempSettings = new UserSettings();
+                tempSettings = DefaultSettings.set();
+                MainWindow.currentSettings = tempSettings;
 
-        private async Task<string> DoGetSettings()
-        {
-            await Task.Run(() =>
-           {
-               bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appSettingsFolder).Any();
-               if (isEmpty)
-               {
-                   UserSettings tempSettings = new UserSettings();
-                   tempSettings = DefaultSettings.set();
-                   MainWindow.currentSettings = tempSettings;
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+                using (StreamWriter sw = new StreamWriter(settingsFile))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, tempSettings);
+                }
 
-                   JsonSerializer serializer = new JsonSerializer();
-                   serializer.NullValueHandling = NullValueHandling.Ignore;
-                   using (StreamWriter sw = new StreamWriter(settingsFile))
-                   using (JsonWriter writer = new JsonTextWriter(sw))
-                   {
-                       serializer.Serialize(writer, tempSettings);
-                   }
-               }
-               else
-               {
-                   UserSettings tempSettings = new UserSettings();
-                   string tempSettingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
-                   JsonSerializer serializer = new JsonSerializer();
-                   using (StreamReader sr = System.IO.File.OpenText(settingsFile))
-                   using (JsonTextReader jsonTR = new JsonTextReader(sr))
-                   {
-                       tempSettings = serializer.Deserialize<UserSettings>(jsonTR);
-                   }
-                   MainWindow.currentSettings = tempSettings;
-               }
+            }
 
-           }
-           );
-            return "Settings loading done.";
+            // If file does exist, deserialise the file and load the object up into the "currentSettings" object.
+            else
+            {
+                UserSettings tempSettings = new UserSettings();
+                string tempSettingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
+                JsonSerializer serializer = new JsonSerializer();
+                using (StreamReader sr = System.IO.File.OpenText(settingsFile))
+                using (JsonTextReader jsonTR = new JsonTextReader(sr))
+                {
+                    tempSettings = serializer.Deserialize<UserSettings>(jsonTR);
+                }
+                MainWindow.currentSettings = tempSettings;
+            }        
         }
+        #endregion
 
+
+        #region Library check
         // Checks for an existing library, if none exists create folders and call library gen method, if one does exist then it loads it up.
         private async Task<string> DoLibraryCheck()
         {
 
-            bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appLibraryFolder).Any();
+            bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appLibraryFolder).Any(); // Checks if there are any libraries currently stored locally
+
+            // If no local library exists, generate a new one via user input.
             if (isEmpty)
             {
                 lblStatus.Content = "Library not found - Please select a root folder for your music.";
@@ -113,15 +115,15 @@ namespace Musick
 
                     // Show testDialog as a modal dialog and determine if true.
                     if (libraryNameDialog.ShowDialog() == true)
-                    {
-                        // Read the contents of testDialog's TextBox.
-                        this.libraryName = libraryNameDialog.txtLibraryName.Text + ".txt";
-                    }
-                    
+                    {                       
+                        this.libraryName = libraryNameDialog.txtLibraryName.Text + ".txt"; // Read the contents of testDialog's TextBox.
+                    }                  
                     lblStatus.Content = "Generating library from selected folder...";                                 
                     await DoGenerateLibrary(selectedFolder);
                     return "Library not found - Generating from path...";
                 }
+
+                // If user somehow manages to dodge the dialog, this error will show (highly unlikely, but whatever)
                 else
                 {
                     System.Windows.MessageBox.Show("You must select a library location!");
@@ -129,15 +131,20 @@ namespace Musick
                     return "No Folder selected.";                   
                 }
             }
+
+            // If one exists, load the library.
             else
             {
                 lblStatus.Content = "Library found - Loading Library...";
-                await Task.Delay(1500);
+                await Task.Delay(800);
                 await DoLoadLibrary();
-                return "Library not found - Generating from path...";
+                return "Library Found...";
             }
         }
+        #endregion
 
+
+        #region Generate library
         // Generate a new library file using the selected directory.
         private async Task<string> DoGenerateLibrary(string selectedFolder)
         {
@@ -156,12 +163,15 @@ namespace Musick
                 }
             }
             );
-            lblStatus.Content = "Library Generated";
-            await Task.Delay(1000);
+            lblStatus.Content = "Library Generated...";
+            await Task.Delay(750);
             return "Library Generated!";
         }
+        #endregion
 
-        // Loads an existing library file (if one exists)
+
+        #region Load library
+        // If a local library (or libraries) exists, this will deserialise the file(s) into the songList object for the Library window to use. 
         private async Task<string> DoLoadLibrary()
         {
             await Task.Run(() =>
@@ -184,10 +194,10 @@ namespace Musick
             }
             );
             MusickLibrary.SongList = tempSongList;
-            lblStatus.Content = "Library loaded.";           
-            await Task.Delay(1000);
+            lblStatus.Content = "Library loaded...";           
+            await Task.Delay(729);
             return "Library Loaded!";
         }
-
+        #endregion
     }
 }

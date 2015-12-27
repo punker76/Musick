@@ -26,9 +26,7 @@ namespace Musick
             this.DataContext = this;
             cboAccentList.ItemsSource = accentList;
             cboThemeList.ItemsSource = themeList;
-            var theme = ThemeManager.DetectAppStyle(Application.Current);
-            cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
-            cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
+
         }
 
         private void cboAccentList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -36,7 +34,8 @@ namespace Musick
             // get the theme from the window
             var theme = ThemeManager.DetectAppStyle(Application.Current);
             // Set the accent and save it to user settings.
-            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(cboAccentList.SelectedItem.ToString()), theme.Item1);           
+            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(cboAccentList.SelectedItem.ToString()), theme.Item1);
+            MainWindow.currentSettings.accent = cboAccentList.SelectedItem.ToString();           
         }
 
         private void cboThemeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -45,6 +44,7 @@ namespace Musick
             var theme = ThemeManager.DetectAppStyle(Application.Current);
             // Set the theme and save to user settings.
             ThemeManager.ChangeAppStyle(Application.Current, theme.Item2 , ThemeManager.GetAppTheme(cboThemeList.SelectedItem.ToString()));
+            MainWindow.currentSettings.theme = cboThemeList.SelectedItem.ToString();
         }
 
         #region Lists
@@ -59,5 +59,12 @@ namespace Musick
             "BaseDark","BaseLight"
         };
         #endregion
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
+            cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
+        }
     }
 }

@@ -241,6 +241,7 @@
                     Ticks="1000"
                     IsMoveToPointEnabled="True"
                     ValueChanged="volumeBar_ValueChanged"/>
+            <TextBlock x:Name="lblProgressStatus" Foreground="{DynamicResource AccentColorBrush}" Background="Black" HorizontalAlignment="Left" Margin="25,0,0,0" VerticalAlignment="Center" Grid.Row="2">00:00:00</TextBlock>
         </Grid>
     </Grid>
 </Controls:MetroWindow>
