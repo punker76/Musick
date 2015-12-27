@@ -47,6 +47,13 @@ namespace Musick
             MainWindow.currentSettings.theme = cboThemeList.SelectedItem.ToString();
         }
 
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
+            cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
+        }
+
         #region Lists
         public List<string> accentList = new List<string>()
             {
@@ -59,14 +66,5 @@ namespace Musick
             "BaseDark","BaseLight"
         };
         #endregion
-
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            var theme = ThemeManager.DetectAppStyle(Application.Current);
-            cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
-            cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
-        }
-
-        
     }
 }

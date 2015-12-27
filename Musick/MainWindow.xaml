@@ -12,6 +12,7 @@
         WindowTransitionsEnabled="False"
         MouseMove="MetroWindow_MouseMove"
         MouseLeave="MetroWindow_MouseLeave"
+        Loaded="MetroWindow_Loaded"
         EnableDWMDropShadow="True" 
         ResizeMode="NoResize" 
         IsMaxRestoreButtonEnabled="False" 

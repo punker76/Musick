@@ -41,7 +41,7 @@ namespace Musick
         private bool mediaPlayerIsPlaying = false;
         public BitmapSource noAlbumArt;
         public static UserSettings currentSettings = new UserSettings();
-        
+        private LowLevelKeyboardListener _listener;
 
         #endregion
 
@@ -90,7 +90,6 @@ namespace Musick
             objectToSubscribeTo.songSelected += songDoubleClicked;
         }
 
-
         #region Load up settings
         private void DoUseSettings()
         {
@@ -105,6 +104,11 @@ namespace Musick
         }
         #endregion
 
+        private void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
+        {
+            isUsingControls = false;
+            timer.Start();
+        }
 
         #region Actions
 
@@ -128,6 +132,46 @@ namespace Musick
             this.Title = song.SongTitle+ " - " +song.SongArtist;
         }
         
+        // Plays previous track - Add method for playing from previous played list when shuffle is used.
+        public void DoPreviousTrack()
+        {
+            Library.PreviousSong();
+            Song tempPrevSong = Library.getSong();
+            DoLoadSongFromLibrary(tempPrevSong);
+        }
+
+        public void DoNextTrack()
+        {
+            if (shuffleIsEnabled == true)
+            {
+                Library.RandomSong();
+                Song tempRandSong = Library.getSong();
+                DoLoadSongFromLibrary(tempRandSong);
+            }
+            else if (shuffleIsEnabled == false)
+            {
+                Library.NextSong();
+                Song tempNextSong = Library.getSong();
+                DoLoadSongFromLibrary(tempNextSong);
+            }
+        }
+
+        public void DoPlayTrack()
+        {
+            if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
+            {
+                DoPlaySong();
+            }
+
+            else if (mediaPlayerIsPlaying == true)
+            {
+                mediaPlayer.Pause();
+                mediaPlayerIsPlaying = false;
+                playButtonVisual.IsEnabled = true;
+            }
+        }
+
+        // Plays the song.
         public void DoPlaySong()
         {
             if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
@@ -262,17 +306,7 @@ namespace Musick
         #region Controls
         private void btnPlayTrack_Click(object sender, RoutedEventArgs e)
         {
-            if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
-            {
-                DoPlaySong();
-            }
-
-            else if (mediaPlayerIsPlaying == true)
-            {
-                mediaPlayer.Pause();
-                mediaPlayerIsPlaying = false;
-                playButtonVisual.IsEnabled = true;
-            }
+            DoPlayTrack();
         }
 
         private bool shuffleIsEnabled;
@@ -280,12 +314,6 @@ namespace Musick
         {
             shuffleIsEnabled = !shuffleIsEnabled;
             shuffleButtonVisual.IsEnabled = !shuffleButtonVisual.IsEnabled;            
-        }
-
-        private void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
-        {
-            isUsingControls = false;
-            timer.Start();
         }
 
         private void btnVolume_Click(object sender, RoutedEventArgs e)
@@ -316,25 +344,28 @@ namespace Musick
 
         private void btnPreviousTrack_Click(object sender, RoutedEventArgs e)
         {
-            Library.PreviousSong();
-            Song tempPrevSong = Library.getSong();
-            DoLoadSongFromLibrary(tempPrevSong);
+            DoPreviousTrack();
         }
 
 
         private void btnNextTrack_Click(object sender, RoutedEventArgs e)
         {
-            if (shuffleIsEnabled == true)
+            DoNextTrack();
+        }
+
+        void _listener_OnKeyPressed(object sender, KeyPressedArgs e)
+        {
+            if (e.KeyPressed == Key.MediaPlayPause)
             {
-                Library.RandomSong();
-                Song tempRandSong = Library.getSong();
-                DoLoadSongFromLibrary(tempRandSong);
+                DoPlayTrack();
             }
-            else if (shuffleIsEnabled == false)
+            if (e.KeyPressed == Key.MediaNextTrack)
             {
-                Library.NextSong();
-                Song tempNextSong = Library.getSong();
-                DoLoadSongFromLibrary(tempNextSong);
+                DoNextTrack();
+            }
+            if (e.KeyPressed == Key.MediaPreviousTrack)
+            {
+                DoPreviousTrack();
             }
         }
 
@@ -495,6 +526,7 @@ namespace Musick
                 serializer.Serialize(writer, currentSettings);
             }
         }
+
         #endregion
 
 
@@ -577,6 +609,15 @@ namespace Musick
         }
         */
         #endregion
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            _listener = new LowLevelKeyboardListener();
+            _listener.OnKeyPressed += _listener_OnKeyPressed;
+
+            _listener.HookKeyboard();
+        }
+
 
     }
 }
