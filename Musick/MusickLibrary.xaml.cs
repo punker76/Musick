@@ -85,6 +85,7 @@ namespace Musick
         }
         #endregion
 
+
         #region Window Hotkeys.
         private void LibraryWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {

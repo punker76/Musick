@@ -12,8 +12,24 @@ namespace Musick.Musick_Classes
         public static UserSettings set()
         {
             UserSettings tempDefaults = new UserSettings();
+
+
             tempDefaults.theme = "BaseDark";
             tempDefaults.accent = "Red";
+
+
+            #region Library window settings
+            tempDefaults.libraryHeight = 380;
+            tempDefaults.libraryWidth = 1000;
+            tempDefaults.libraryTop = 20;
+            tempDefaults.libraryLeft = 380;
+            #endregion
+
+            #region Player window settings
+            tempDefaults.playerLeft = 20;
+            tempDefaults.playerTop = 20;
+            #endregion
+
             return tempDefaults;
         }
     }

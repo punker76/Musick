@@ -18,6 +18,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <ComboBox x:Name="cboAccentList"
                               Grid.Row="0"

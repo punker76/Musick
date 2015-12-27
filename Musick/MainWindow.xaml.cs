@@ -91,13 +91,20 @@ namespace Musick
         }
 
 
+        #region Load up settings
         private void DoUseSettings()
         {
-            // get the theme from the window
-            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
-            // Set the theme and save to user settings.
+            // Set the theme to the value stored in currentSettings
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent(MainWindow.currentSettings.accent), ThemeManager.GetAppTheme(MainWindow.currentSettings.theme));
+
+            // Load up player window settings
+            this.Left = currentSettings.playerLeft; this.Top = currentSettings.playerTop;
+
+            // Load up library window settings
+            Library.Left = currentSettings.libraryLeft; Library.Top = currentSettings.libraryTop; Library.Width = currentSettings.libraryWidth; Library.Height = currentSettings.libraryHeight; 
         }
+        #endregion
+
 
         #region Actions
 
@@ -377,7 +384,7 @@ namespace Musick
 
         private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
+            lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
             mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
         }
         #endregion
@@ -459,6 +466,25 @@ namespace Musick
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
+            DoSaveSettings();
+            Application.Current.Shutdown();
+        }
+
+        #endregion
+
+
+        #region Save Stuff
+        private void DoSaveSettings()
+        {
+            currentSettings.libraryLeft = Library.Left;
+            currentSettings.libraryTop = Library.Top;
+            currentSettings.libraryWidth = Library.Width;
+            currentSettings.libraryHeight = Library.Height;
+
+            currentSettings.playerTop = this.Top;
+            currentSettings.playerLeft = this.Left;
+
+            // Delete the existing settings file, and re-serialise one with the current settings.
             string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
             System.IO.File.Delete(settingsFile);
             JsonSerializer serializer = new JsonSerializer();
@@ -468,9 +494,7 @@ namespace Musick
             {
                 serializer.Serialize(writer, currentSettings);
             }
-            Application.Current.Shutdown();
         }
-
         #endregion
 
 

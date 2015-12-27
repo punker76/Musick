@@ -8,8 +8,18 @@ namespace Musick.Musick_Classes
 {
     public class UserSettings
     {
+        // Application theme
         public string theme { get; set; }
-        public string accent { get; set; }    
+        public string accent { get; set; }
         
+        // Player window Position
+        public double playerLeft { get; set; }
+        public double playerTop { get; set; }
+
+        // Library window Size/Position   
+        public double libraryWidth { get; set; }
+        public double libraryHeight { get; set; }
+        public double libraryLeft { get; set; }
+        public double libraryTop { get; set; }
     }
 }

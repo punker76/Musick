@@ -18,7 +18,8 @@
         Icon="Musick.ico" 
         ShowIconOnTitleBar="False"
         KeyDown="MetroWindow_KeyDown" 
-        TitleCaps="False">
+        TitleCaps="False"
+        >
 
     <Grid x:Name="MainWindowGrid"
           Height="350"
@@ -48,7 +49,7 @@
             
             <StatusBar Grid.Row="1" Margin="0,20,0,0">
                 <StatusBar.Background>
-                    <SolidColorBrush Opacity="0.2"/>
+                    <SolidColorBrush Opacity="1.0"/>
                 </StatusBar.Background>
                 <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Bottom">
                     <Slider Name="sliProgress" 
@@ -241,7 +242,7 @@
                     Ticks="1000"
                     IsMoveToPointEnabled="True"
                     ValueChanged="volumeBar_ValueChanged"/>
-            <TextBlock x:Name="lblProgressStatus" Foreground="{DynamicResource AccentColorBrush}" Background="Black" HorizontalAlignment="Left" Margin="25,0,0,0" VerticalAlignment="Center" Grid.Row="2">00:00:00</TextBlock>
+            <TextBlock x:Name="lblProgressStatus" Foreground="{DynamicResource AccentColorBrush}" Background="{DynamicResource WindowBackgroundBrush}" HorizontalAlignment="Left" Margin="25,0,0,0" VerticalAlignment="Center" Grid.Row="2">00:00:00</TextBlock>
         </Grid>
     </Grid>
 </Controls:MetroWindow>

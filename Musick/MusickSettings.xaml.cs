@@ -66,5 +66,7 @@ namespace Musick
             cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
             cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
         }
+
+        
     }
 }
