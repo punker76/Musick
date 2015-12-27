@@ -95,14 +95,14 @@
                                 <Style TargetType="{x:Type Rectangle}">
                                     <Setter Property="OpacityMask">
                                         <Setter.Value>
-                                            <VisualBrush Stretch="Uniform" Opacity="0.5" Visual="{StaticResource appbar_shuffle}" />
+                                            <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_shuffle}" />
                                         </Setter.Value>
                                     </Setter>
                                     <Style.Triggers>
                                         <Trigger Property="IsEnabled" Value="False">
                                             <Setter Property="OpacityMask">
                                                 <Setter.Value>
-                                                    <VisualBrush Stretch="Uniform" Visual="{StaticResource appbar_shuffle}" />
+                                                    <VisualBrush Stretch="Uniform" Opacity="0.5" Visual="{StaticResource appbar_shuffle}" />
                                                 </Setter.Value>
                                             </Setter>
                                         </Trigger>

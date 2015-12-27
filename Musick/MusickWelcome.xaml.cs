@@ -27,6 +27,7 @@ namespace Musick
     {
         public MusickWelcome()
         {
+            // Creates all the directories on load to save all the effort - if they already exist then it doesn't bother.
             Directory.CreateDirectory(ConfigClass.appDataFolder);
             Directory.CreateDirectory(ConfigClass.appLibraryFolder);
             Directory.CreateDirectory(ConfigClass.appSettingsFolder);

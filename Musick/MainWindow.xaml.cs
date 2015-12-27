@@ -37,7 +37,6 @@ namespace Musick
         #region Variables
 
         public static MediaPlayer mediaPlayer = new MediaPlayer();
-        private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
         public BitmapSource noAlbumArt;
         public static UserSettings currentSettings = new UserSettings();
@@ -53,20 +52,18 @@ namespace Musick
             this.DataContext = this;
 
             DoUseSettings();
-
+            
+            // Converts the "no album art" placeholder into a useable format
             var image = Properties.Resources.NoAlbumArt;
             var bitmap = new System.Drawing.Bitmap(image);
             noAlbumArt = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             bitmap.Dispose();
-
+            
+            // Sets the default image to the "no album art" placeholder
             ImageBrush imgBrush = new ImageBrush();
             imgBrush.ImageSource = noAlbumArt;
             imgBrush.Opacity = 0.4;
             MainWindowGrid.Background = imgBrush;
-
-            // Set media voluma (user stored variable goes here) and set volumeBar to the mediaPlayer volume.
-            mediaPlayer.Volume = 0.5;
-            volumeBar.Value = mediaPlayer.Volume;
 
             // Control visibility @ runtime.
             volumeBar.Visibility = Visibility.Hidden;
@@ -74,50 +71,60 @@ namespace Musick
             playerMenu.Opacity = 0; playerMenu.Visibility = Visibility.Hidden;
 
             // AutoHide controls timer (Maybe user setting?)
-            timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.0) };
-            timer.Tick += timer_Tick;
+            controlHideTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1.0) };
+            controlHideTimer.Tick += timer_Tick;
 
-            // Shuffle enabled default.
-            shuffleButtonVisual.IsEnabled = true;
-            shuffleIsEnabled = false;
-
-            // Timer for the playing of media.
+            // Timer for the timing of media playing.
             mediaTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(0.1) };
             mediaTimer.Tick += mediaTimer_Tick;
             mediaTimer.Start();
 
+            // Subscribing to the doubleclick event in the library and firing the doubleclick event here.
             MusickLibrary objectToSubscribeTo = Library;
             objectToSubscribeTo.songSelected += songDoubleClicked;
         }
 
+
         #region Load up settings
+        // Load up those settings boys.
         private void DoUseSettings()
         {
             // Set the theme to the value stored in currentSettings
             ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent(MainWindow.currentSettings.accent), ThemeManager.GetAppTheme(MainWindow.currentSettings.theme));
 
             // Load up player window settings
-            this.Left = currentSettings.playerLeft; this.Top = currentSettings.playerTop;
+            this.Left = currentSettings.playerLeft; this.Top = currentSettings.playerTop; // Window position
+            volumeBar.Value = currentSettings.volumeValue; mediaPlayer.Volume = currentSettings.volumeValue; // Volume values
+            //if (currentSettings.shuffleEnabled == false) { shuffleButtonVisual.IsEnabled = true; shuffleIsEnabled = false; } // Sets shuffle enabled & the corresponding visual
+            //else { shuffleButtonVisual.IsEnabled = false; shuffleIsEnabled = true; } // Sets shuffle enabled
+            shuffleButtonVisual.IsEnabled = currentSettings.shuffleEnabled; shuffleIsEnabled = currentSettings.shuffleEnabled;
+            
 
             // Load up library window settings
-            Library.Left = currentSettings.libraryLeft; Library.Top = currentSettings.libraryTop; Library.Width = currentSettings.libraryWidth; Library.Height = currentSettings.libraryHeight; 
+            Library.Left = currentSettings.libraryLeft; Library.Top = currentSettings.libraryTop; Library.Width = currentSettings.libraryWidth; Library.Height = currentSettings.libraryHeight;         
         }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            _listener = new LowLevelKeyboardListener();
+            _listener.OnKeyPressed += _listener_OnKeyPressed;
+
+            _listener.HookKeyboard();
+        }
+
         #endregion
 
-        private void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
-        {
-            isUsingControls = false;
-            timer.Start();
-        }
 
         #region Actions
 
+        // Event fires when a song in the library is doubleclicked.
         public void songDoubleClicked(object sender, EventArgs e)
         {
             Song tempSong = Library.getSong();
             DoLoadSongFromLibrary(tempSong);
         }
 
+        // Grabs a song from the library (currently selected) and loads it up into the mediaPlayer - then it sets album artwork and window title before playing it.
         public void DoLoadSongFromLibrary(Song song)
         {
             mediaPlayer.Open(new Uri(song.FileLocation));
@@ -127,6 +134,7 @@ namespace Musick
             DoPlaySong();
         }
 
+        // Sets the window title to the current song name & artist.
         public void DoSetWindowTitle(Song song)
         {
             this.Title = song.SongTitle+ " - " +song.SongArtist;
@@ -140,6 +148,7 @@ namespace Musick
             DoLoadSongFromLibrary(tempPrevSong);
         }
 
+        // Plays the next track, if shuffle is enabled then it'll play a random track.
         public void DoNextTrack()
         {
             if (shuffleIsEnabled == true)
@@ -156,6 +165,7 @@ namespace Musick
             }
         }
 
+        // Plays the track if there is a track loaded and 
         public void DoPlayTrack()
         {
             if (mediaPlayer.Source != null && mediaPlayerIsPlaying == false)
@@ -189,22 +199,31 @@ namespace Musick
         #region UI
 
             #region control Animations
-        private bool isUsingControls;
-        private DispatcherTimer timer;
+        
+        private bool isUsingControls; // Toggle for checking if the user is currently using the controls
+        private DispatcherTimer controlHideTimer; // timer for the hiding of controls
+
+        // When the timer hits the limit, fires this event and fades the controls out
         void timer_Tick(object sender, EventArgs e)
         {
-            timer.Stop();
+            controlHideTimer.Stop();
             DoAudioControlFade("out", AudioControlGrid, playerMenu);
+        }
 
+        // When the mouse leaves the window it automatically sets the control in use boolean to false, and starts the timer.
+        private void MetroWindow_MouseLeave(object sender, MouseEventArgs e)
+        {
+            isUsingControls = false;
+            controlHideTimer.Start();
         }
 
         private void MetroWindow_MouseMove(object sender, MouseEventArgs e)
         {
             // Timer controls when you move your mouse on the window.
-            timer.Stop();
+            controlHideTimer.Stop();
             if(isUsingControls == false)
             {
-                timer.Start();
+                controlHideTimer.Start();
             }
             
             // If the opacity is 0 when you move your mouse, it'll go ahead and do this.
@@ -214,27 +233,28 @@ namespace Musick
             }
         }
 
+        // Timer controls for wherever the mouse happens to be - pretty self explanatory
         private void AudioControlGrid_MouseEnter(object sender, MouseEventArgs e)
         {
-            timer.Stop();
+            controlHideTimer.Stop();
             isUsingControls = true;
         }
 
         private void AudioControlGrid_MouseLeave(object sender, MouseEventArgs e)
         {
-            timer.Start();
+            controlHideTimer.Start();
             isUsingControls = false;
         }
 
         private void playerMenu_MouseEnter(object sender, MouseEventArgs e)
         {
-            timer.Stop();
+            controlHideTimer.Stop();
             isUsingControls = true;
         }
 
         private void playerMenu_MouseLeave(object sender, MouseEventArgs e)
         {
-            timer.Stop();
+            controlHideTimer.Stop();
             isUsingControls = false;
         }
 
@@ -267,6 +287,7 @@ namespace Musick
         #endregion
 
             #region AlbumArt
+        // First grabs the album art from the current file, converts it over to a useable bitmap and finally slaps it on the player - if no album art is available then the placeholder will be used.
         private BitmapImage currentAlbumArtBMI;
         public void DoSetAlbumArt(Song song)
         {
@@ -304,11 +325,14 @@ namespace Musick
 
         
         #region Controls
+
+        // Does what it says on the tin- plays the song.
         private void btnPlayTrack_Click(object sender, RoutedEventArgs e)
         {
             DoPlayTrack();
         }
 
+        // Shuffle enable toggle.
         private bool shuffleIsEnabled;
         private void btnShuffle_Click(object sender, RoutedEventArgs e)
         {
@@ -316,6 +340,7 @@ namespace Musick
             shuffleButtonVisual.IsEnabled = !shuffleButtonVisual.IsEnabled;            
         }
 
+        // Unhides the volume bar when you click on the audio button - might replace this later with something a bit better.
         private void btnVolume_Click(object sender, RoutedEventArgs e)
         {
             if (volumeBar.Visibility == Visibility.Hidden)
@@ -328,6 +353,7 @@ namespace Musick
             }
         }
 
+        //Right click setter for the volume bar
         private void btnVolume_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             if(mediaPlayer.Volume == 0)
@@ -342,17 +368,19 @@ namespace Musick
             }
         }
 
+        // Self explanatory - button does the thing.
         private void btnPreviousTrack_Click(object sender, RoutedEventArgs e)
         {
             DoPreviousTrack();
         }
 
-
+        // Self explanatory - button does the thing.
         private void btnNextTrack_Click(object sender, RoutedEventArgs e)
         {
             DoNextTrack();
         }
 
+        // Global listener event - Fires on keypress, if any of those keypresses happens to be a media key, then good news.
         void _listener_OnKeyPressed(object sender, KeyPressedArgs e)
         {
             if (e.KeyPressed == Key.MediaPlayPause)
@@ -374,7 +402,9 @@ namespace Musick
 
         #region Progress Slider
 
-        private DispatcherTimer mediaTimer;
+        private DispatcherTimer mediaTimer; // Timer for the media.
+
+        // Very long and boring bit of code which simply put sets up the progress bars values based on the currently playing media.
         void mediaTimer_Tick(object sender, EventArgs e)
         {
             if ((mediaPlayer.Source != null) && (mediaPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
@@ -402,17 +432,22 @@ namespace Musick
             }
         }
 
+        
+        private bool userIsDraggingSlider = false; // Checks if the user is dragging the slider
+        // toggles the slider drag
         private void sliProgress_DragStarted(object sender, DragStartedEventArgs e)
         {
             userIsDraggingSlider = true;
         }
 
+        // When the drag ends, set the position of the currently playing media to the value given by the slider.
         private void sliProgress_DragCompleted(object sender, DragCompletedEventArgs e)
         {
             userIsDraggingSlider = false;
             mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
         }
 
+        // Whenever the slider changes, update the time readout and the media player.
         private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
@@ -422,7 +457,7 @@ namespace Musick
 
 
         #region Volume Controls and Values
-        
+        // Sets the media players volume to the value of the slider when it's changed.
         private void volumeBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             mediaPlayer.Volume = volumeBar.Value;
@@ -432,6 +467,7 @@ namespace Musick
 
 
         #region Window Hotkeys
+        // Hotkeys for the window - might abstract this out somehow so it doesn't become a horrible mess - might make these customisable in future.
         private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.H && (Keyboard.Modifiers & (ModifierKeys.Control)) == (ModifierKeys.Control))
@@ -452,13 +488,10 @@ namespace Musick
 
 
         #region Window Controls
-        public MusickLibrary Library = new MusickLibrary();       
+        public MusickLibrary Library = new MusickLibrary(); // sets a public instance of the Library window for everything to use.
+           
+        // controls the showing and hiding of the player window.    
         private void LibraryItem_Click(object sender, RoutedEventArgs e)
-        {
-            DoLibraryControl();
-        }
-
-        private void DoLibraryControl()
         {
             if (Library.IsVisible)
             {
@@ -472,13 +505,10 @@ namespace Musick
         }
 
 
-        public MusickSettings Settings = new MusickSettings();
-        private void SettingsItem_Click(object sender, RoutedEventArgs e)
-        {
-            DoSettingsControl();
-        }
+        public MusickSettings Settings = new MusickSettings(); // public instance of the Settings window to be used.
 
-        private void DoSettingsControl()
+        // Controls showing and hiding of the settings window.
+        private void SettingsItem_Click(object sender, RoutedEventArgs e)
         {
             if (Settings.IsVisible)
             {
@@ -490,10 +520,12 @@ namespace Musick
                 Settings.Activate();
             }
         }
+
         #endregion
 
 
         #region Misc code
+        // Overrides the "OnClosed" event to force the application to shut down when the player is closed. - Runs the Save method to serialise the current settings to local storage.
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
@@ -505,19 +537,25 @@ namespace Musick
 
 
         #region Save Stuff
+
+        // Sets currentSettings values to reflect the current state of the application, then serialises them to file.
         private void DoSaveSettings()
         {
+            // Library window values
             currentSettings.libraryLeft = Library.Left;
             currentSettings.libraryTop = Library.Top;
             currentSettings.libraryWidth = Library.Width;
             currentSettings.libraryHeight = Library.Height;
 
+            // Player window values
             currentSettings.playerTop = this.Top;
             currentSettings.playerLeft = this.Left;
-
-            // Delete the existing settings file, and re-serialise one with the current settings.
+            currentSettings.volumeValue = volumeBar.Value;
+            currentSettings.shuffleEnabled = shuffleIsEnabled;
+            
+            // Serialise save data to file with the current settings.
             string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
-            System.IO.File.Delete(settingsFile);
+            //System.IO.File.Delete(settingsFile);
             JsonSerializer serializer = new JsonSerializer();
             serializer.NullValueHandling = NullValueHandling.Ignore;
             using (StreamWriter sw = new StreamWriter(settingsFile))
@@ -531,6 +569,8 @@ namespace Musick
 
 
         #region Legacy UI Continuity crap - Massive needless performance sink        
+        // Disgusting legacy code for UI continuity that I decided not to use, huge performance sink and the result wasn't all that good. - Will save this elsewhere for future reference at some point.
+
         /*
         // Convert the currently displayed album art to a bitmap so I can use it for UI stuff.
         private Bitmap BitmapImage2Bitmap(BitmapImage bitmapImage)
@@ -609,14 +649,6 @@ namespace Musick
         }
         */
         #endregion
-
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            _listener = new LowLevelKeyboardListener();
-            _listener.OnKeyPressed += _listener_OnKeyPressed;
-
-            _listener.HookKeyboard();
-        }
 
 
     }

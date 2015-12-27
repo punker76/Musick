@@ -26,8 +26,15 @@ namespace Musick.Musick_Classes
             #endregion
 
             #region Player window settings
+            // Player window position
             tempDefaults.playerLeft = 20;
             tempDefaults.playerTop = 20;
+
+            // Volume
+            tempDefaults.volumeValue = 0.5;
+
+            // Shuffle
+            tempDefaults.shuffleEnabled = false;
             #endregion
 
             return tempDefaults;

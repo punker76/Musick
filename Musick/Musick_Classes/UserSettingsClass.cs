@@ -16,10 +16,18 @@ namespace Musick.Musick_Classes
         public double playerLeft { get; set; }
         public double playerTop { get; set; }
 
+        // Volume
+        public double volumeValue { get; set; }
+
+        // Shuffle
+        public bool shuffleEnabled { get; set; }
+
         // Library window Size/Position   
         public double libraryWidth { get; set; }
         public double libraryHeight { get; set; }
         public double libraryLeft { get; set; }
         public double libraryTop { get; set; }
+
+
     }
 }
