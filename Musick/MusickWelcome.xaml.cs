@@ -29,14 +29,24 @@ namespace Musick
         {
             InitializeComponent();
         }
-
-        string musicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, "MusicLibrary.txt");
+       
         static ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
         string selectedFolder;
         string libraryName;
+        string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
 
         private async void MusickWelcome_Loaded(object sender, RoutedEventArgs e)
         {
+            Directory.CreateDirectory(ConfigClass.appDataFolder);
+            Directory.CreateDirectory(ConfigClass.appLibraryFolder);
+            Directory.CreateDirectory(ConfigClass.appSettingsFolder);
+
+            lblStatus.Content = "Loading User Settings...";
+            await Task.Delay(1500);
+            await DoGetSettings();
+            await Task.Delay(800);          
+            lblStatus.Content = "Settings loaded...";
+            await Task.Delay(1000);
             lblStatus.Content = "Checking for library...";
             await Task.Delay(2000);
             await DoLibraryCheck();
@@ -47,12 +57,49 @@ namespace Musick
             this.Close();             
         }
 
+
+
+        private async Task<string> DoGetSettings()
+        {
+            await Task.Run(() =>
+           {
+               bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appSettingsFolder).Any();
+               if (isEmpty)
+               {
+                   UserSettings tempSettings = new UserSettings();
+                   tempSettings = DefaultSettings.set();
+                   MainWindow.currentSettings = tempSettings;
+
+                   JsonSerializer serializer = new JsonSerializer();
+                   serializer.NullValueHandling = NullValueHandling.Ignore;
+                   using (StreamWriter sw = new StreamWriter(settingsFile))
+                   using (JsonWriter writer = new JsonTextWriter(sw))
+                   {
+                       serializer.Serialize(writer, tempSettings);
+                   }
+               }
+               else
+               {
+                   UserSettings tempSettings = new UserSettings();
+                   string tempSettingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
+                   JsonSerializer serializer = new JsonSerializer();
+                   using (StreamReader sr = System.IO.File.OpenText(settingsFile))
+                   using (JsonTextReader jsonTR = new JsonTextReader(sr))
+                   {
+                       tempSettings = serializer.Deserialize<UserSettings>(jsonTR);
+                   }
+                   MainWindow.currentSettings = tempSettings;
+               }
+
+           }
+           );
+            return "Settings loading done.";
+        }
+
         // Checks for an existing library, if none exists create folders and call library gen method, if one does exist then it loads it up.
         private async Task<string> DoLibraryCheck()
         {
-            Directory.CreateDirectory(ConfigClass.appDataFolder);
-            Directory.CreateDirectory(ConfigClass.appLibraryFolder);
-            Directory.CreateDirectory(ConfigClass.appSettingsFolder);
+
             bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appLibraryFolder).Any();
             if (isEmpty)
             {
@@ -96,22 +143,16 @@ namespace Musick
         {
             await Task.Run(() =>
             {
-                foreach (var file in Directory.GetFiles(selectedFolder, "*", SearchOption.AllDirectories))
-                {
-                    if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav") || file.Contains(".ogg"))
-                    {
-                        tempSongList.Add(CreateSong.Create(file));                      
-                    }
-                }
+                ObservableCollection<Song> tempLibrary = GenerateLibrary.Create(selectedFolder);
 
-                MusickLibrary.SongList = tempSongList;
+                MusickLibrary.SongList = tempLibrary;
                 string tempMusicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, libraryName);
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Ignore;
                 using (StreamWriter sw = new StreamWriter(tempMusicLibraryFile))
                 using (JsonWriter writer = new JsonTextWriter(sw))
                 {
-                    serializer.Serialize(writer, tempSongList);
+                    serializer.Serialize(writer, tempLibrary);
                 }
             }
             );

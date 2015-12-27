@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Musick.Musick_Classes
+{
+    class GenerateLibrary
+    {
+        public static ObservableCollection<Song> Create(string directory)
+        {
+            ObservableCollection<Song> tempLibrary = new ObservableCollection<Song>();
+            foreach (var file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
+            {
+                if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav") || file.Contains(".ogg"))
+                {
+                    var tagFile = TagLib.File.Create(file);
+                    string tempTitle;
+                    string tempArtist;
+                    string tempAlbum;
+                    string tempGenre;
+                    string tempYear;
+
+                    tempTitle = (tagFile.Tag.Title != null) ? tagFile.Tag.Title : Path.GetFileName(file);
+                    tempArtist = (tagFile.Tag.FirstPerformer != null) ? tagFile.Tag.FirstPerformer : "[No Artist]";
+                    tempAlbum = (tagFile.Tag.Album != null) ? tagFile.Tag.Album : "[No Album]";
+                    tempGenre = (tagFile.Tag.FirstGenre != null) ? tagFile.Tag.FirstGenre : "[No Genre]";
+                    tempYear = (tagFile.Tag.Year.ToString() != "0") ? tagFile.Tag.Year.ToString() : "[No Year]";
+
+                    tempLibrary.Add(new Song(file, tempTitle, tempArtist, tempAlbum, tempGenre, tempYear));
+                }
+            }
+            return tempLibrary;
+        }
+    }
+}

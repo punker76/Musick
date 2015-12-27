@@ -39,6 +39,7 @@ namespace Musick
         private bool userIsDraggingSlider = false;
         private bool mediaPlayerIsPlaying = false;
         public BitmapSource noAlbumArt;
+        public static UserSettings currentSettings = new UserSettings();
         
 
         #endregion
@@ -49,6 +50,8 @@ namespace Musick
             InitializeComponent();
 
             this.DataContext = this;
+
+            DoUseSettings();
 
             var image = Properties.Resources.NoAlbumArt;
             var bitmap = new System.Drawing.Bitmap(image);
@@ -86,6 +89,14 @@ namespace Musick
             objectToSubscribeTo.songSelected += songDoubleClicked;
         }
 
+
+        private void DoUseSettings()
+        {
+            // get the theme from the window
+            var theme = ThemeManager.DetectAppStyle(System.Windows.Application.Current);
+            // Set the theme and save to user settings.
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent(MainWindow.currentSettings.accent), ThemeManager.GetAppTheme(MainWindow.currentSettings.theme));
+        }
 
         #region Actions
 

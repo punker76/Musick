@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Library" x:Name="LibraryWindow" IsMinButtonEnabled="False" KeyDown="LibraryWindow_KeyDown" Icon="Musick.ico"  IsMaxRestoreButtonEnabled="False" IsCloseButtonEnabled="False" TitleCaps="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowActivated="False">
+        Title="Musick - Library" x:Name="LibraryWindow" Width="800" Height="450" IsMinButtonEnabled="False" KeyDown="LibraryWindow_KeyDown" Icon="Musick.ico"  IsMaxRestoreButtonEnabled="False" IsCloseButtonEnabled="False" TitleCaps="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowActivated="False">
     <Grid>
 
         <DataGrid x:Name="dtgLibrary"

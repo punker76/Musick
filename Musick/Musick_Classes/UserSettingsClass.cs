@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Musick.Musick_Classes
 {
-    class UserSettingsClass
+    public class UserSettings
     {
+        public string theme { get; set; }
+        public string accent { get; set; }    
+        
     }
 }

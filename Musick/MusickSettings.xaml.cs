@@ -27,8 +27,8 @@ namespace Musick
             cboAccentList.ItemsSource = accentList;
             cboThemeList.ItemsSource = themeList;
             var theme = ThemeManager.DetectAppStyle(Application.Current);
-            cboAccentList.SelectedItem = theme.Item2.Name;
-            cboThemeList.SelectedItem = theme.Item1.Name;
+            cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
+            cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
         }
 
         private void cboAccentList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -36,17 +36,14 @@ namespace Musick
             // get the theme from the window
             var theme = ThemeManager.DetectAppStyle(Application.Current);
             // Set the accent and save it to user settings.
-            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(cboAccentList.SelectedItem.ToString()), theme.Item1);
-            
+            ThemeManager.ChangeAppStyle(Application.Current, ThemeManager.GetAccent(cboAccentList.SelectedItem.ToString()), theme.Item1);           
         }
-
-
 
         private void cboThemeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // get the theme from the window
             var theme = ThemeManager.DetectAppStyle(Application.Current);
-            // Set the accent and save it to user settings.
+            // Set the theme and save to user settings.
             ThemeManager.ChangeAppStyle(Application.Current, theme.Item2 , ThemeManager.GetAppTheme(cboThemeList.SelectedItem.ToString()));
         }
 
