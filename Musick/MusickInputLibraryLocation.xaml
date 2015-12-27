@@ -1,0 +1,52 @@
+﻿<Controls:MetroWindow x:Class="Musick.MusickInputLibraryLocation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Musick"
+        xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        mc:Ignorable="d"
+        Title="Musick - Select Library Location"  Height="300" Width="450" Icon="Musick.ico" ShowTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowStartupLocation="Manual" IsWindowDraggable="False" IsCloseButtonEnabled="False" WindowTransitionsEnabled="False">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="lblSelectedFolder"
+               Grid.Row="0"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Center"
+               HorizontalContentAlignment="Center"/>
+        <TreeView x:Name="foldersItem"
+                    Width="Auto"
+                    VerticalAlignment="Stretch"
+                    BorderBrush="#FFFFFFFF"
+                    Foreground="#FFFFFFFF" Margin="5,0,5,0"
+                    Grid.Row="1"
+                    SelectedItemChanged="foldersItem_SelectedItemChanged">
+            <TreeView.Resources>
+                <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource MetroTreeViewItem}">
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+
+                                    <TextBlock Text="{Binding}" Margin="5,0" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TreeView.Resources>
+        </TreeView>
+        <Button x:Name="btnAccept"
+                Grid.Row="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="0,0,10,0"
+                Content="Accept"
+                Click="btnAccept_Click"
+                Style="{DynamicResource SquareButtonStyle}" Controls:ButtonHelper.PreserveTextCase="True"
+                Visibility="Hidden"/>
+    </Grid>
+</Controls:MetroWindow>
