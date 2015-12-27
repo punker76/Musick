@@ -365,14 +365,14 @@ namespace Musick
 
         private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
+            //lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"hh\:mm\:ss");
             mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
         }
         #endregion
 
 
         #region Volume Controls and Values
-        // -- Volume Controls -- //
+        
         private void volumeBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             mediaPlayer.Volume = volumeBar.Value;

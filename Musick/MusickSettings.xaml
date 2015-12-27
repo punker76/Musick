@@ -6,8 +6,48 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Settings" TitleCaps="False" Height="300" Width="300" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False">
+        Title="Musick - Settings" TitleCaps="False" Height="333.333" Width="415.333" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="148*"/>
+            <ColumnDefinition Width="27*"/>
+        </Grid.ColumnDefinitions>
+        <Controls:MetroAnimatedSingleRowTabControl VerticalAlignment="Top" Grid.ColumnSpan="2">
+            <TabItem Header="General">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <ComboBox x:Name="cboAccentList"
+                              Grid.Row="0"
+                              ItemsSource="{Binding}" 
+                              SelectionChanged="cboAccentList_SelectionChanged"
+                              HorizontalAlignment="Center"
+                              Width="200"/>
+                    <ComboBox x:Name="cboThemeList"
+                              Grid.Row="1"
+                              ItemsSource="{Binding}"
+                              SelectionChanged="cboThemeList_SelectionChanged"
+                              HorizontalAlignment="Center"
+                              Width="200"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Libraries">
+                <Grid>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="Playlists">
+                <Grid>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="About">
+                <Grid>
+
+                </Grid>
+            </TabItem>
+        </Controls:MetroAnimatedSingleRowTabControl>
     </Grid>
 </Controls:MetroWindow>

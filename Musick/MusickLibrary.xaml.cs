@@ -50,8 +50,17 @@ namespace Musick
 
         public void PreviousSong()
         {
-            dtgLibrary.SelectedIndex--;
-            currentSong = (Song)dtgLibrary.SelectedItem;           
+            if(dtgLibrary.SelectedIndex==0)
+            {               
+                dtgLibrary.SelectedIndex = dtgLibrary.Items.Count -1;
+                currentSong = (Song)dtgLibrary.SelectedItem;
+            }
+            else
+            {
+                dtgLibrary.SelectedIndex--;
+                currentSong = (Song)dtgLibrary.SelectedItem;
+            }
+            
         }
 
         public void RandomSong()
