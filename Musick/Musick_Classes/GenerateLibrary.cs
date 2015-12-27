@@ -15,7 +15,7 @@ namespace Musick.Musick_Classes
             ObservableCollection<Song> tempLibrary = new ObservableCollection<Song>();
             foreach (var file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
             {
-                if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav") || file.Contains(".ogg"))
+                if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav"))
                 {
                     var tagFile = TagLib.File.Create(file);
                     string tempTitle;
