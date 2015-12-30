@@ -121,6 +121,12 @@
   <data name="MusickLogo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\MusickLogo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Musick_NoArt_Dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Musick_NoArt_Dark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Musick_NoArt_Light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Musick_NoArt_Light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="NoAlbumArt" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NoAlbumArt.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

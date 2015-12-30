@@ -38,7 +38,7 @@ namespace Musick
 
         public static MediaPlayer mediaPlayer = new MediaPlayer();
         private bool mediaPlayerIsPlaying = false;
-        public BitmapSource noAlbumArt;
+        public static BitmapSource placeholderImage;
         public static UserSettings currentSettings = new UserSettings();
         private LowLevelKeyboardListener _listener;
 
@@ -52,16 +52,21 @@ namespace Musick
             this.DataContext = this;
 
             DoUseSettings();
-            
+
             // Converts the "no album art" placeholder into a useable format
-            var image = Properties.Resources.NoAlbumArt;
-            var bitmap = new System.Drawing.Bitmap(image);
-            noAlbumArt = Imaging.CreateBitmapSourceFromHBitmap(bitmap.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            bitmap.Dispose();
+            var theme = ThemeManager.DetectAppStyle(Application.Current);
+            if (theme.Item2.Name == "BaseDark")
+            {
+                placeholderImage = ImageConvert.convert(Properties.Resources.Musick_NoArt_Dark);
+            }
+            else
+            {
+                placeholderImage = ImageConvert.convert(Properties.Resources.Musick_NoArt_Light);
+            }
             
             // Sets the default image to the "no album art" placeholder
             ImageBrush imgBrush = new ImageBrush();
-            imgBrush.ImageSource = noAlbumArt;
+            imgBrush.ImageSource = placeholderImage;
             imgBrush.Opacity = 0.4;
             MainWindowGrid.Background = imgBrush;
 
@@ -94,7 +99,6 @@ namespace Musick
             volumeBar.Value = currentSettings.volumeValue; mediaPlayer.Volume = currentSettings.volumeValue; // Volume values
             shuffleButtonVisual.IsEnabled = currentSettings.shuffleEnabled; shuffleIsEnabled = currentSettings.shuffleEnabled; // Shuffle toggle
             
-
             // Load up library window settings
             Library.Left = currentSettings.libraryLeft; Library.Top = currentSettings.libraryTop; Library.Width = currentSettings.libraryWidth; Library.Height = currentSettings.libraryHeight;         
         }
@@ -306,10 +310,9 @@ namespace Musick
                 MainWindowGrid.Background = imgBrush;
             }
             else
-            {
-                
+            {              
                 ImageBrush imgBrush = new ImageBrush();
-                imgBrush.ImageSource = noAlbumArt;
+                imgBrush.ImageSource = placeholderImage;
                 imgBrush.Opacity = 0.4;
                 MainWindowGrid.Background = imgBrush;
             }

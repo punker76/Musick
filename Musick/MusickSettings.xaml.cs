@@ -53,6 +53,15 @@ namespace Musick
             // Set the theme and save to user settings.
             ThemeManager.ChangeAppStyle(Application.Current, theme.Item2 , ThemeManager.GetAppTheme(cboThemeList.SelectedItem.ToString()));
             MainWindow.currentSettings.theme = cboThemeList.SelectedItem.ToString();
+
+            if (theme.Item2.Name == "BaseDark")
+            {
+                MainWindow.placeholderImage = ImageConvert.convert(Properties.Resources.Musick_NoArt_Dark);
+            }
+            else
+            {
+                MainWindow.placeholderImage = ImageConvert.convert(Properties.Resources.Musick_NoArt_Light);
+            }
         }
 
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
