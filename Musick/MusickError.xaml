@@ -22,7 +22,7 @@
 			Style="{StaticResource ResourceKey=SquareButtonStyle}"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
-                Click="btnOK_Click"
+            Click="btnOK_Click"
 			Grid.Row="1" Custom:ButtonHelper.PreserveTextCase="True"/>
     </Grid>
 </Controls:MetroWindow>

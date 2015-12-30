@@ -103,7 +103,6 @@ namespace Musick
         // Checks for an existing library, if none exists create folders and call library gen method, if one does exist then it loads it up.
         private async Task<string> DoLibraryCheck()
         {
-
             bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appLibraryFolder).Any(); // Checks if there are any libraries currently stored locally
 
             // If no local library exists, generate a new one via user input.
@@ -182,9 +181,7 @@ namespace Musick
         private async Task<string> DoLoadLibrary()
         {
             await Task.Run(() => 
-            {
-                CancellationTokenSource cts = new CancellationTokenSource();
-
+            {               
                 JsonSerializer serializer = new JsonSerializer();
                 foreach (var file in Directory.GetFiles(ConfigClass.appLibraryFolder))
                 {
@@ -194,6 +191,7 @@ namespace Musick
                     {
                         tempLibrary = serializer.Deserialize<ObservableCollection<Song>>(jsonTR);
                     }
+
                     try
                     {
                         foreach (var song in tempLibrary)
@@ -205,9 +203,11 @@ namespace Musick
                         string tempFileLoc = file;
                         MusickSettings.libList.Add(new LibraryFile(tempFileLoc, tempLibName, tempSource));
                     }
+
+                    // If the serialiser fails to generate a readable object for the application to use, assume it's broken, corrupt or in some way unusable and clear all library files
+                    // requiring the user to generate a new one on launch.
                     catch
-                    {                      
-                        cts.Cancel();
+                    {                                              
                         Dispatcher.Invoke(() =>
                         {
                             MusickError errorWin = new MusickError();
