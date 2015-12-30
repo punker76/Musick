@@ -15,6 +15,7 @@ using MahApps.Metro;
 using System.IO;
 using Musick.Musick_Classes;
 using System.Collections.ObjectModel;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Musick
 {
@@ -27,13 +28,13 @@ namespace Musick
         {
             InitializeComponent();
             this.DataContext = this;
-            lstLibraries.ItemsSource = libList;
+            dtgLibraries.ItemsSource = libList;
             cboAccentList.ItemsSource = accentList;
             cboThemeList.ItemsSource = themeList;
 
         }
 
-        public ObservableCollection<LibraryFile> libList = new ObservableCollection<LibraryFile>();
+        public static ObservableCollection<LibraryFile> libList = new ObservableCollection<LibraryFile>();
 
         private void cboAccentList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -58,12 +59,6 @@ namespace Musick
             var theme = ThemeManager.DetectAppStyle(Application.Current);
             cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
             cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
-
-            foreach (var libraryFile in Directory.GetFiles(ConfigClass.appLibraryFolder))
-            {
-                string libraryName = System.IO.Path.GetFileNameWithoutExtension(libraryFile);
-                libList.Add(new LibraryFile(libraryFile, libraryName));
-            }
         }
 
         #region Lists
@@ -79,17 +74,31 @@ namespace Musick
         };
         #endregion
 
-        private void lstLibraries_KeyDown(object sender, KeyEventArgs e)
+        private async void btnDelete_Click(object sender, RoutedEventArgs e)
         {
-            if(e.Key == Key.Delete)
+            if (dtgLibraries.SelectedIndex != -1)
             {
-                if (lstLibraries.SelectedIndex != -1)
+                if(dtgLibraries.Items.Count > 1)
                 {
-                    var tempSelected = lstLibraries.SelectedIndex;
-                    File.Delete(libList[tempSelected].libraryFile);
-                    libList.RemoveAt(tempSelected);
+                    MessageDialogResult result = await this.ShowMessageAsync("WARNING", "Are you sure you want to delete this library?", MessageDialogStyle.AffirmativeAndNegative);
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        var tempSelected = dtgLibraries.SelectedIndex;
+                        File.Delete(libList[tempSelected].LibraryFileLoc);
+                        libList.RemoveAt(tempSelected);
+                    }
                 }
-                    
+                else
+                {
+                    MessageDialogResult result = await this.ShowMessageAsync("WARNING", "If you delete your only library, the program will exit - Are you sure?", MessageDialogStyle.AffirmativeAndNegative);
+                    if (result == MessageDialogResult.Affirmative)
+                    {
+                        var tempSelected = dtgLibraries.SelectedIndex;
+                        File.Delete(libList[tempSelected].LibraryFileLoc);
+                        libList.RemoveAt(tempSelected);
+                        Application.Current.Shutdown();
+                    }
+                }
             }
         }
     }

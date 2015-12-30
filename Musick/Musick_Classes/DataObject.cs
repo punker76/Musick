@@ -34,15 +34,17 @@ namespace Musick.Musick_Classes
 
     public class LibraryFile
     {
-        public string libraryFile { get; set; }
-        public string libraryName { get; set; }
+        public string LibraryFileLoc { get; set; }
+        public string LibraryName { get; set; }
+        public string LibrarySource { get; set; }
 
         public LibraryFile() { }
 
-        public LibraryFile(string libraryfile, string libraryname)
+        public LibraryFile(string libraryfileloc, string libraryname, string librarysource)
         {
-            libraryFile = libraryfile;
-            libraryName = libraryname;
+            LibraryFileLoc = libraryfileloc;
+            LibraryName = libraryname;
+            LibrarySource = librarysource;
         }
     }
 }

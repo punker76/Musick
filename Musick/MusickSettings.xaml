@@ -37,28 +37,35 @@
             <TabItem Header="Libraries">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
                              x:Name="txtLibraryAdd"
                              Controls:TextBoxHelper.Watermark="Enter a name for your new library - E.G. 'MyLibrary'"
                              Margin="10,5,10,5"/>
-                    <ListBox x:Name="lstLibraries"
-                             Grid.Row="1"
-                             HorizontalAlignment="Stretch"
-                             VerticalAlignment="Stretch"
-                             Margin="10,5,10,5"
-                             KeyDown="lstLibraries_KeyDown">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0,2">
-                                    <TextBlock Text="{Binding libraryName}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-
-                    </ListBox>
+                    <DataGrid x:Name="dtgLibraries"
+                              Grid.Row="1"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              Margin="10,5,10,5"                             
+                              AutoGenerateColumns="False"
+                              ItemsSource="{Binding}"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Library Name" Binding="{Binding LibraryName}" Width="*"/>
+                            <DataGridTextColumn Header="Location" Binding="{Binding LibrarySource}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <Button x:Name="btnDelete"
+                            Grid.Row="2"
+                            Content="Delete Library"
+                            Click="btnDelete_Click"
+                            Style="{StaticResource SquareButtonStyle}" 
+                            Controls:ButtonHelper.PreserveTextCase="True"
+                            HorizontalAlignment="Center"
+                            Margin="0,10,0,0"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Playlists">

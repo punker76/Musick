@@ -164,6 +164,10 @@ namespace Musick
                 {
                     serializer.Serialize(writer, tempLibrary);
                 }
+                string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(tempSongList[0].FileLocation));
+                string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
+                string tempFileLoc = tempMusicLibraryFile;
+                MusickSettings.libList.Add(new LibraryFile(tempFileLoc, tempLibName, tempSource));
             }
             );
             lblStatus.Content = "Library Generated...";
@@ -194,6 +198,10 @@ namespace Musick
                         {
                             tempSongList.Add(song);
                         }
+                        string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(tempSongList[0].FileLocation));
+                        string tempLibName = System.IO.Path.GetFileNameWithoutExtension(file);
+                        string tempFileLoc = file;
+                        MusickSettings.libList.Add(new LibraryFile(tempFileLoc, tempLibName, tempSource));
                     }
                     catch
                     {
