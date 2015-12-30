@@ -7,7 +7,7 @@
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Custom="http://metro.mahapps.com/winfx/xaml/controls" x:Class="Musick.MusickError"
         mc:Ignorable="d"
-        Title="MusickError" Loaded="MetroWindow_Loaded" Height="100" Width="300" Icon="Musick.ico" ShowTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowStartupLocation="Manual" IsWindowDraggable="False" IsCloseButtonEnabled="False" WindowTransitionsEnabled="False">
+        Title="MusickError" Height="100" Width="300" Icon="Musick.ico" ShowTitleBar="False" ResizeMode="NoResize" SizeToContent="Width" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowStartupLocation="CenterOwner" IsWindowDraggable="False" IsCloseButtonEnabled="False" WindowTransitionsEnabled="False">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>

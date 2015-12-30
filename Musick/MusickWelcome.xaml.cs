@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using Newtonsoft.Json;
 using System.Threading;
+using MahApps.Metro.Controls.Dialogs;
 
 namespace Musick
 {
@@ -180,8 +181,10 @@ namespace Musick
         // If a local library (or libraries) exists, this will deserialise the file(s) into the songList object for the Library window to use. 
         private async Task<string> DoLoadLibrary()
         {
-            await Task.Run(() =>
+            await Task.Run(() => 
             {
+                CancellationTokenSource cts = new CancellationTokenSource();
+
                 JsonSerializer serializer = new JsonSerializer();
                 foreach (var file in Directory.GetFiles(ConfigClass.appLibraryFolder))
                 {
@@ -203,28 +206,35 @@ namespace Musick
                         MusickSettings.libList.Add(new LibraryFile(tempFileLoc, tempLibName, tempSource));
                     }
                     catch
-                    {
-                        MusickError errorWin = new MusickError();
-                        errorWin.Owner = this;
-                        errorWin.lblError.Content = "One or more libraries are corrupt/missing - Restart to generate a new library";
-                        if (errorWin.ShowDialog() == true)
+                    {                      
+                        cts.Cancel();
+                        Dispatcher.Invoke(() =>
                         {
-                            foreach (var libFile in Directory.GetFiles(ConfigClass.appLibraryFolder))
+                            MusickError errorWin = new MusickError();
+                            errorWin.Owner = this;
+                            errorWin.lblError.Content = "One or more libraries are corrupt/missing - Restart to generate a new library";
+                            if (errorWin.ShowDialog() == true)
                             {
-                                File.Delete(libFile);
-                            }
-                            this.Close();
+                                foreach (var libFile in Directory.GetFiles(ConfigClass.appLibraryFolder))
+                                {
+                                    File.Delete(libFile);
+                                }
+                                this.Close();
+                            }                         
                         }
+                        );
                     }
-
                 }
-
             }
             );
             MusickLibrary.SongList = tempSongList;
             lblStatus.Content = "Library loaded...";           
             await Task.Delay(729);
             return "Library Loaded!";
+        }
+        private void LibCorruptedError()
+        {
+
         }
         #endregion
     }

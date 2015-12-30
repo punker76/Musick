@@ -30,12 +30,8 @@ namespace Musick
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
+            DialogResult = true;
             this.Close();
-        }
-
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-        {
-            
         }
     }
 }
