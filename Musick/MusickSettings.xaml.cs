@@ -16,6 +16,7 @@ using System.IO;
 using Musick.Musick_Classes;
 using System.Collections.ObjectModel;
 using MahApps.Metro.Controls.Dialogs;
+using Newtonsoft.Json;
 
 namespace Musick
 {
@@ -100,6 +101,52 @@ namespace Musick
                     }
                 }
             }
+        }
+
+        private async void txtLibraryAdd_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+            {
+                if (txtLibraryAdd.Text != "")
+                {
+                    MusickInputLibraryLocation folderSelectDialog = new MusickInputLibraryLocation();
+                    if (folderSelectDialog.ShowDialog() == true)
+                    {
+                        string selectedFolder = folderSelectDialog.lblSelectedFolder.Content.ToString();
+                        string libraryName = txtLibraryAdd.Text;
+                        folderSelectDialog.Close();
+                        libList.Add(await DoGenerateLibrary(selectedFolder,libraryName));                        
+                    }
+                }
+            }
+        }
+        // Generate a new library file using the selected directory.
+        private async Task<LibraryFile> DoGenerateLibrary(string selectedFolder, string libraryName)
+        {
+            LibraryFile tempLibraryFile = new LibraryFile();
+            await Task.Run(() =>
+            {
+                ObservableCollection<Song> tempLibrary = GenerateLibrary.Create(selectedFolder);
+
+                // Adds the songs contained within this new library to the library window.
+                MusickLibrary.SongList.Union(tempLibrary).ToList();
+                
+                string tempMusicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, libraryName);
+                JsonSerializer serializer = new JsonSerializer();
+                serializer.NullValueHandling = NullValueHandling.Ignore;
+                using (StreamWriter sw = new StreamWriter(tempMusicLibraryFile))
+                using (JsonWriter writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, tempLibrary);
+                }
+                string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(tempLibrary[0].FileLocation));
+                string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
+                string tempFileLoc = tempMusicLibraryFile;
+                tempLibraryFile = new LibraryFile(tempFileLoc, tempLibName, tempSource);
+                return tempLibraryFile;
+            }
+            );
+            return tempLibraryFile;
         }
     }
 }

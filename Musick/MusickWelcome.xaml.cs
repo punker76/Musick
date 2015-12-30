@@ -171,7 +171,6 @@ namespace Musick
             }
             );
             lblStatus.Content = "Library Generated...";
-            await Task.Delay(750);
             return "Library Generated!";
         }
         #endregion

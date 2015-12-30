@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Settings" Loaded="MetroWindow_Loaded" TitleCaps="False" Height="333.333" Width="415.333" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowTransitionsEnabled="False">
+        Title="Musick - Settings" Loaded="MetroWindow_Loaded" TitleCaps="False" Height="350" Width="425" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowTransitionsEnabled="False">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="148*"/>
@@ -35,14 +35,17 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Libraries">
-                <Grid>
+                <Grid VerticalAlignment="Stretch">
                     <Grid.RowDefinitions>
-                        <RowDefinition />
-                        <RowDefinition />
-                        <RowDefinition />
+                        <RowDefinition Height="45"/>
+                        <RowDefinition Height="180"/>
+                        <RowDefinition Height="0.2*"/>
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0"
                              x:Name="txtLibraryAdd"
+                             KeyDown="txtLibraryAdd_KeyDown"
+                             VerticalAlignment="Top"
+                             HorizontalAlignment="Stretch"
                              Controls:TextBoxHelper.Watermark="Enter a name for your new library - E.G. 'MyLibrary'"
                              Margin="10,5,10,5"/>
                     <DataGrid x:Name="dtgLibraries"
@@ -65,6 +68,7 @@
                             Style="{StaticResource SquareButtonStyle}" 
                             Controls:ButtonHelper.PreserveTextCase="True"
                             HorizontalAlignment="Center"
+                            VerticalAlignment="Bottom"
                             Margin="0,10,0,0"/>
                 </Grid>
             </TabItem>
