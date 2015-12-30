@@ -54,6 +54,7 @@ namespace Musick
             {               
                 dtgLibrary.SelectedIndex = dtgLibrary.Items.Count -1;
                 currentSong = (Song)dtgLibrary.SelectedItem;
+                
             }
             else
             {

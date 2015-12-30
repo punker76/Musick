@@ -53,6 +53,7 @@ namespace Musick
 
             DoUseSettings();
 
+            #region Startup stuff
             // Converts the "no album art" placeholder into a useable format
             var theme = ThemeManager.DetectAppStyle(Application.Current);
             if (theme.Item2.Name == "BaseDark")
@@ -87,6 +88,7 @@ namespace Musick
             // Subscribing to the doubleclick event in the library and firing the doubleclick event here.
             MusickLibrary objectToSubscribeTo = Library;
             objectToSubscribeTo.songSelected += songDoubleClicked;
+            #endregion
         }
 
 
@@ -199,8 +201,8 @@ namespace Musick
 
             #region control Animations
         
-        private bool isUsingControls; // Toggle for checking if the user is currently using the controls
-        private DispatcherTimer controlHideTimer; // timer for the hiding of controls
+        private bool isUsingControls;               // Toggle for checking if the user is currently using the controls
+        private DispatcherTimer controlHideTimer;   // timer for the hiding of controls
 
         // When the timer hits the limit, fires this event and fades the controls out
         void timer_Tick(object sender, EventArgs e)
