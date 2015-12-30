@@ -12,6 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MahApps.Metro;
+using System.IO;
+using Musick.Musick_Classes;
+using System.Collections.ObjectModel;
 
 namespace Musick
 {
@@ -24,10 +27,13 @@ namespace Musick
         {
             InitializeComponent();
             this.DataContext = this;
+            lstLibraries.ItemsSource = libList;
             cboAccentList.ItemsSource = accentList;
             cboThemeList.ItemsSource = themeList;
 
         }
+
+        public ObservableCollection<LibraryFile> libList = new ObservableCollection<LibraryFile>();
 
         private void cboAccentList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -52,6 +58,12 @@ namespace Musick
             var theme = ThemeManager.DetectAppStyle(Application.Current);
             cboAccentList.SelectedItem = MainWindow.currentSettings.accent;
             cboThemeList.SelectedItem = MainWindow.currentSettings.theme;
+
+            foreach (var libraryFile in Directory.GetFiles(ConfigClass.appLibraryFolder))
+            {
+                string libraryName = System.IO.Path.GetFileNameWithoutExtension(libraryFile);
+                libList.Add(new LibraryFile(libraryFile, libraryName));
+            }
         }
 
         #region Lists
@@ -66,5 +78,19 @@ namespace Musick
             "BaseDark","BaseLight"
         };
         #endregion
+
+        private void lstLibraries_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Delete)
+            {
+                if (lstLibraries.SelectedIndex != -1)
+                {
+                    var tempSelected = lstLibraries.SelectedIndex;
+                    File.Delete(libList[tempSelected].libraryFile);
+                    libList.RemoveAt(tempSelected);
+                }
+                    
+            }
+        }
     }
 }

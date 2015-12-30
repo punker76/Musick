@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Settings" Loaded="MetroWindow_Loaded" TitleCaps="False" Height="333.333" Width="415.333" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False">
+        Title="Musick - Settings" Loaded="MetroWindow_Loaded" TitleCaps="False" Height="333.333" Width="415.333" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowTransitionsEnabled="False">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="148*"/>
@@ -36,7 +36,29 @@
             </TabItem>
             <TabItem Header="Libraries">
                 <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBox Grid.Row="0"
+                             x:Name="txtLibraryAdd"
+                             Controls:TextBoxHelper.Watermark="Enter a name for your new library - E.G. 'MyLibrary'"
+                             Margin="10,5,10,5"/>
+                    <ListBox x:Name="lstLibraries"
+                             Grid.Row="1"
+                             HorizontalAlignment="Stretch"
+                             VerticalAlignment="Stretch"
+                             Margin="10,5,10,5"
+                             KeyDown="lstLibraries_KeyDown">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,2">
+                                    <TextBlock Text="{Binding libraryName}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
 
+                    </ListBox>
                 </Grid>
             </TabItem>
             <TabItem Header="Playlists">

@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using System.Collections.ObjectModel;
 using System.IO;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace Musick
 {
@@ -34,7 +35,8 @@ namespace Musick
             InitializeComponent();
             DoGetSettings();
         }
-       
+
+
         static ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
         string selectedFolder;
         string libraryName;
@@ -186,10 +188,28 @@ namespace Musick
                     {
                         tempLibrary = serializer.Deserialize<ObservableCollection<Song>>(jsonTR);
                     }
-                    foreach(var song in tempLibrary)
+                    try
                     {
-                        tempSongList.Add(song);
+                        foreach (var song in tempLibrary)
+                        {
+                            tempSongList.Add(song);
+                        }
                     }
+                    catch
+                    {
+                        MusickError errorWin = new MusickError();
+                        errorWin.Owner = this;
+                        errorWin.errorMessage = "One or more libraries are corrupt/missing - Restart to generate a new library";
+                        if (errorWin.ShowDialog() == true)
+                        {
+                            foreach (var libFile in Directory.GetFiles(ConfigClass.appLibraryFolder))
+                            {
+                                File.Delete(libFile);
+                            }
+                            this.Close();
+                        }
+                    }
+
                 }
 
             }
