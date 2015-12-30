@@ -199,7 +199,7 @@ namespace Musick
                     {
                         MusickError errorWin = new MusickError();
                         errorWin.Owner = this;
-                        errorWin.errorMessage = "One or more libraries are corrupt/missing - Restart to generate a new library";
+                        errorWin.lblError.Content = "One or more libraries are corrupt/missing - Restart to generate a new library";
                         if (errorWin.ShowDialog() == true)
                         {
                             foreach (var libFile in Directory.GetFiles(ConfigClass.appLibraryFolder))
