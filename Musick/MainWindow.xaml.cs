@@ -88,16 +88,11 @@ namespace Musick
         #region Load up settings
         // Load up those settings boys.
         private void DoUseSettings()
-        {
-            // Set the theme to the value stored in currentSettings
-            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent(MainWindow.currentSettings.accent), ThemeManager.GetAppTheme(MainWindow.currentSettings.theme));
-
+        {        
             // Load up player window settings
             this.Left = currentSettings.playerLeft; this.Top = currentSettings.playerTop; // Window position
             volumeBar.Value = currentSettings.volumeValue; mediaPlayer.Volume = currentSettings.volumeValue; // Volume values
-            //if (currentSettings.shuffleEnabled == false) { shuffleButtonVisual.IsEnabled = true; shuffleIsEnabled = false; } // Sets shuffle enabled & the corresponding visual
-            //else { shuffleButtonVisual.IsEnabled = false; shuffleIsEnabled = true; } // Sets shuffle enabled
-            shuffleButtonVisual.IsEnabled = currentSettings.shuffleEnabled; shuffleIsEnabled = currentSettings.shuffleEnabled;
+            shuffleButtonVisual.IsEnabled = currentSettings.shuffleEnabled; shuffleIsEnabled = currentSettings.shuffleEnabled; // Shuffle toggle
             
 
             // Load up library window settings

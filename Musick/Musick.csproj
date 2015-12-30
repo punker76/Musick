@@ -164,6 +164,7 @@
     <Compile Include="Musick_Classes\DataObject.cs" />
     <Compile Include="Musick_Classes\DefaultSettings.cs" />
     <Compile Include="Musick_Classes\GenerateLibrary.cs" />
+    <Compile Include="Musick_Classes\JSON.cs" />
     <Compile Include="Musick_Classes\LowLevelKeyboardListener.cs" />
     <Compile Include="Musick_Classes\UserSettingsClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

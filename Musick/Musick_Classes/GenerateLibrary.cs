@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -34,6 +35,15 @@ namespace Musick.Musick_Classes
                 }
             }
             return tempLibrary;
+        }
+       
+        public static LibraryFile CreateLibraryEntry(ObservableCollection<Song> libSourceToUse, string tempMusicLibraryFile)
+        {
+            string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(libSourceToUse[0].FileLocation));
+            string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
+            string tempFileLoc = tempMusicLibraryFile;
+            LibraryFile tempLibFile = new LibraryFile(tempFileLoc, tempLibName, tempSource);
+            return tempLibFile;
         }
     }
 }

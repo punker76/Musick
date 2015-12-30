@@ -34,9 +34,11 @@ namespace Musick
                 item.Items.Add(dummyNode);
                 item.Expanded += new RoutedEventHandler(folder_Expanded);
                 foldersItem.Items.Add(item);
-            }            
-            this.Left = SystemParameters.PrimaryScreenWidth / 2 - this.Width / 2;
-            this.Top = SystemParameters.PrimaryScreenHeight / 2 + 120;
+            }
+            //this.Left = SystemParameters.PrimaryScreenWidth / 2 - this.Width / 2;
+            //this.Top = SystemParameters.PrimaryScreenHeight / 2 + 120;
+
+
         }
 
         //Sets the label when the selected item has changed.
@@ -47,7 +49,7 @@ namespace Musick
             btnAccept.Visibility = Visibility.Visible;
         }
 
-            void folder_Expanded(object sender, RoutedEventArgs e)
+        void folder_Expanded(object sender, RoutedEventArgs e)
         {
             TreeViewItem item = (TreeViewItem)sender;
             if (item.Items.Count == 1 && item.Items[0] == dummyNode)
@@ -77,6 +79,13 @@ namespace Musick
             {
                 this.DialogResult = true;
             }           
+        }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Width = Owner.Width;
+            this.Left = Owner.Left;
+            this.Top = Owner.Top + Owner.Height;
         }
     }
 }

@@ -24,8 +24,6 @@ namespace Musick
         public MusickInputLibraryName()
         {
             InitializeComponent();
-            this.Left = SystemParameters.PrimaryScreenWidth / 2 - this.Width/2;
-            this.Top = SystemParameters.PrimaryScreenHeight / 2 + 120;
         }
 
         private void txtLibraryName_KeyDown(object sender, KeyEventArgs e)
@@ -58,6 +56,12 @@ namespace Musick
                 }
                 return false;
             }
+        }
+
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Left = Owner.Left;
+            this.Top = Owner.Top + Owner.Height;
         }
     }
 }

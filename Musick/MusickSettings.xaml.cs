@@ -110,6 +110,7 @@ namespace Musick
                 if (txtLibraryAdd.Text != "")
                 {
                     MusickInputLibraryLocation folderSelectDialog = new MusickInputLibraryLocation();
+                    folderSelectDialog.Owner = this;
                     if (folderSelectDialog.ShowDialog() == true)
                     {
                         string selectedFolder = folderSelectDialog.lblSelectedFolder.Content.ToString();
@@ -147,6 +148,24 @@ namespace Musick
             }
             );
             return tempLibraryFile;
+        }
+
+        private void btnScan_Click(object sender, RoutedEventArgs e)
+        {
+            if(dtgLibraries.SelectedIndex != -1)
+            {
+                LibraryFile tempFile = (LibraryFile)dtgLibraries.SelectedItem;
+                foreach (var song in MusickLibrary.SongList.ToList())
+                {
+                    if (song.FileLocation.Contains(tempFile.LibrarySource))
+                    {
+                        if (!File.Exists(song.FileLocation))
+                        {
+                            MusickLibrary.SongList.Remove(song);
+                        }
+                    }
+                }
+            }            
         }
     }
 }

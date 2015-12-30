@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +29,5 @@ namespace Musick.Musick_Classes
         public double libraryHeight { get; set; }
         public double libraryLeft { get; set; }
         public double libraryTop { get; set; }
-
-
     }
 }

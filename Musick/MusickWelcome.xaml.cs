@@ -35,13 +35,14 @@ namespace Musick
             Directory.CreateDirectory(ConfigClass.appSettingsFolder);
             InitializeComponent();
             DoGetSettings();
+            // Set the theme to the value stored in currentSettings
+            ThemeManager.ChangeAppStyle(System.Windows.Application.Current, ThemeManager.GetAccent(MainWindow.currentSettings.accent), ThemeManager.GetAppTheme(MainWindow.currentSettings.theme));
         }
 
 
         static ObservableCollection<Song> tempSongList = new ObservableCollection<Song>();
         string selectedFolder;
         string libraryName;
-        string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
 
         private async void MusickWelcome_Loaded(object sender, RoutedEventArgs e)
         {
@@ -63,7 +64,7 @@ namespace Musick
         // Checks for existing settings file, if none exists generate a new one using the defaults.
         private void DoGetSettings()
         {                   
-            bool isEmpty = !Directory.EnumerateFiles(ConfigClass.appSettingsFolder).Any(); // Check if file exists
+            bool isEmpty = !File.Exists(ConfigClass.settingsFile); // Check if file exists
 
             // If file doesn't exist, generate one from the DefaultSettings class.
             if (isEmpty)
@@ -71,29 +72,30 @@ namespace Musick
                 UserSettings tempSettings = new UserSettings();
                 tempSettings = DefaultSettings.set();
                 MainWindow.currentSettings = tempSettings;
-
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                using (StreamWriter sw = new StreamWriter(settingsFile))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, tempSettings);
-                }
-
+                JSON.SerializeSettings(tempSettings);
             }
 
-            // If file does exist, deserialise the file and load the object up into the "currentSettings" object.
+            // If file does exist, deserialise the file and load the object up into the "currentSettings" object - If the object is unusable, prompts the user and creates settings from default.
             else
             {
-                UserSettings tempSettings = new UserSettings();
-                string tempSettingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
-                JsonSerializer serializer = new JsonSerializer();
-                using (StreamReader sr = System.IO.File.OpenText(settingsFile))
-                using (JsonTextReader jsonTR = new JsonTextReader(sr))
+                try
                 {
-                    tempSettings = serializer.Deserialize<UserSettings>(jsonTR);
+                    UserSettings tempSettings = JSON.DeserializeSettings();
+                    MainWindow.currentSettings = tempSettings;
                 }
-                MainWindow.currentSettings = tempSettings;
+                catch
+                {
+                    MusickError errorWin = new MusickError();
+                    errorWin.Owner = this;
+                    errorWin.lblError.Content = "Settings file corrupted - Using default settings";
+                    if (errorWin.ShowDialog() == true)
+                    {
+                        UserSettings tempSettings = new UserSettings();
+                        tempSettings = DefaultSettings.set();
+                        MainWindow.currentSettings = tempSettings;
+                        JSON.SerializeSettings(tempSettings);
+                    }
+                }
             }        
         }
         #endregion
@@ -110,12 +112,13 @@ namespace Musick
             {
                 lblStatus.Content = "Library not found - Please select a root folder for your music.";
                 MusickInputLibraryLocation folderSelectDialog = new MusickInputLibraryLocation();
+                folderSelectDialog.Owner = this;
                 if (folderSelectDialog.ShowDialog() == true)
                 {
                     selectedFolder = folderSelectDialog.lblSelectedFolder.Content.ToString();
                     folderSelectDialog.Close();
                     MusickInputLibraryName libraryNameDialog = new MusickInputLibraryName();
-
+                    libraryNameDialog.Owner = this;
                     // Show testDialog as a modal dialog and determine if true.
                     if (libraryNameDialog.ShowDialog() == true)
                     {                       
@@ -156,22 +159,16 @@ namespace Musick
                 ObservableCollection<Song> tempLibrary = GenerateLibrary.Create(selectedFolder);
 
                 MusickLibrary.SongList = tempLibrary;
+
                 string tempMusicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, libraryName);
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                using (StreamWriter sw = new StreamWriter(tempMusicLibraryFile))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, tempLibrary);
-                }
-                string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(tempSongList[0].FileLocation));
-                string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
-                string tempFileLoc = tempMusicLibraryFile;
-                MusickSettings.libList.Add(new LibraryFile(tempFileLoc, tempLibName, tempSource));
+
+                JSON.SerializeLibrary(tempMusicLibraryFile, tempLibrary);
+
+                MusickSettings.libList.Add(GenerateLibrary.CreateLibraryEntry(tempLibrary,tempMusicLibraryFile)); // Creates an entry for the local library file to be displayed and interracted with.
             }
             );
             lblStatus.Content = "Library Generated...";
-            return "Library Generated!";
+            return "";
         }
         #endregion
 
@@ -185,28 +182,19 @@ namespace Musick
                 JsonSerializer serializer = new JsonSerializer();
                 foreach (var file in Directory.GetFiles(ConfigClass.appLibraryFolder))
                 {
-                    ObservableCollection<Song> tempLibrary = new ObservableCollection<Song>();
-                    using (StreamReader sr = System.IO.File.OpenText(file))
-                    using (JsonTextReader jsonTR = new JsonTextReader(sr))
-                    {
-                        tempLibrary = serializer.Deserialize<ObservableCollection<Song>>(jsonTR);
-                    }
-
+                    ObservableCollection<Song> tempLibrary = JSON.DeserializeLibrary(file);
                     try
                     {
                         foreach (var song in tempLibrary)
                         {
                             tempSongList.Add(song);
                         }
-                        string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(tempSongList[0].FileLocation));
-                        string tempLibName = System.IO.Path.GetFileNameWithoutExtension(file);
-                        string tempFileLoc = file;
-                        MusickSettings.libList.Add(new LibraryFile(tempFileLoc, tempLibName, tempSource));
+
+                        MusickSettings.libList.Add(GenerateLibrary.CreateLibraryEntry(tempLibrary, file)); // Creates an entry for the local library file to be displayed and interracted with.
                     }
 
-                    // If the serialiser fails to generate a readable object for the application to use, assume it's broken, corrupt or in some way unusable and clear all library files
-                    // requiring the user to generate a new one on launch.
-                    catch
+
+                    catch // If the object returned is unusable, it'll throw this error.
                     {                                              
                         Dispatcher.Invoke(() =>
                         {
@@ -230,11 +218,7 @@ namespace Musick
             MusickLibrary.SongList = tempSongList;
             lblStatus.Content = "Library loaded...";           
             await Task.Delay(729);
-            return "Library Loaded!";
-        }
-        private void LibCorruptedError()
-        {
-
+            return "";
         }
         #endregion
     }
