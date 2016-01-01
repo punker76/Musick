@@ -552,17 +552,9 @@ namespace Musick
             currentSettings.playerLeft = this.Left;
             currentSettings.volumeValue = volumeBar.Value;
             currentSettings.shuffleEnabled = shuffleIsEnabled;
-            
+
             // Serialise save data to file with the current settings.
-            string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt");
-            //System.IO.File.Delete(settingsFile);
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-            using (StreamWriter sw = new StreamWriter(settingsFile))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, currentSettings);
-            }
+            JSON.SerializeSettings(currentSettings);            
         }
 
         #endregion

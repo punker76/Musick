@@ -6,12 +6,8 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Settings" Loaded="MetroWindow_Loaded" TitleCaps="False" Height="350" Width="425" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" WindowTransitionsEnabled="False">
+        Title="Musick - Settings" Loaded="MetroWindow_Loaded" TitleCaps="False" Height="350" Width="425" Icon="Musick.ico" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowIconOnTitleBar="False" ResizeMode="NoResize" WindowTransitionsEnabled="False">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="148*"/>
-            <ColumnDefinition Width="27*"/>
-        </Grid.ColumnDefinitions>
         <Controls:MetroAnimatedSingleRowTabControl VerticalAlignment="Top" Grid.ColumnSpan="2">
             <TabItem Header="General">
                 <Grid>
@@ -20,18 +16,34 @@
                         <RowDefinition/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.3*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Accent"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"/>
                     <ComboBox x:Name="cboAccentList"
                               Grid.Row="0"
+                              Grid.Column="1"
                               ItemsSource="{Binding}" 
                               SelectionChanged="cboAccentList_SelectionChanged"
-                              HorizontalAlignment="Center"
-                              Width="200"/>
+                              HorizontalAlignment="Stretch"
+                              Margin="30,5"/>
+                    <Label Content="Theme"
+                           Grid.Column="0"
+                           Grid.Row="1"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"/>
                     <ComboBox x:Name="cboThemeList"
+                              Grid.Column="1"
                               Grid.Row="1"
                               ItemsSource="{Binding}"
                               SelectionChanged="cboThemeList_SelectionChanged"
-                              HorizontalAlignment="Center"
-                              Width="200"/>
+                              HorizontalAlignment="Stretch"
+                              Margin="30,5"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Libraries">
@@ -74,15 +86,6 @@
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Bottom"
                                 Margin="0,10,10,0"/>
-                        <Button x:Name="btnScan"
-                                Content="Scan For Changes"
-                                Grid.Column="1"
-                                Click="btnScan_Click"
-                                Style="{StaticResource SquareButtonStyle}" 
-                                Controls:ButtonHelper.PreserveTextCase="True"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Bottom"
-                                Margin="10,10,0,0"/>
                     </Grid>
                     
                 </Grid>

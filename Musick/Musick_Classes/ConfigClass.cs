@@ -12,7 +12,7 @@ namespace Musick.Musick_Classes
         public static string appDataFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Musick"); // Local Appdata location.
         public static string appLibraryFolder = System.IO.Path.Combine( appDataFolder, "Library"); // Local library location.
         public static string appSettingsFolder = System.IO.Path.Combine(appDataFolder, "Settings"); // Local settings location.
-        public static string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings.txt"); // Local settings file.
+        public static string settingsFile = System.IO.Path.Combine(ConfigClass.appSettingsFolder, "Settings"); // Local settings file.
 
     }
 }

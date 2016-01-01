@@ -125,6 +125,7 @@ namespace Musick
                         string selectedFolder = folderSelectDialog.lblSelectedFolder.Content.ToString();
                         string libraryName = txtLibraryAdd.Text;
                         folderSelectDialog.Close();
+                        txtLibraryAdd.Clear();
                         libList.Add(await DoGenerateLibrary(selectedFolder,libraryName));                        
                     }
                 }
@@ -140,41 +141,17 @@ namespace Musick
 
                 // Adds the songs contained within this new library to the library window.
                 MusickLibrary.SongList.Union(tempLibrary).ToList();
-                
-                string tempMusicLibraryFile = System.IO.Path.Combine(ConfigClass.appLibraryFolder, libraryName);
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.NullValueHandling = NullValueHandling.Ignore;
-                using (StreamWriter sw = new StreamWriter(tempMusicLibraryFile))
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, tempLibrary);
-                }
-                string tempSource = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(tempLibrary[0].FileLocation));
-                string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
-                string tempFileLoc = tempMusicLibraryFile;
-                tempLibraryFile = new LibraryFile(tempFileLoc, tempLibName, tempSource);
+
+                // Create library entry for the application to use and see.
+                tempLibraryFile = GenerateLibrary.CreateLibraryEntry(tempLibrary, libraryName);
+
+                // Serialize Library.
+                JSON.SerializeLibrary(libraryName, tempLibrary);
+
                 return tempLibraryFile;
             }
             );
             return tempLibraryFile;
-        }
-
-        private void btnScan_Click(object sender, RoutedEventArgs e)
-        {
-            if(dtgLibraries.SelectedIndex != -1)
-            {
-                LibraryFile tempFile = (LibraryFile)dtgLibraries.SelectedItem;
-                foreach (var song in MusickLibrary.SongList.ToList())
-                {
-                    if (song.FileLocation.Contains(tempFile.LibrarySource))
-                    {
-                        if (!File.Exists(song.FileLocation))
-                        {
-                            MusickLibrary.SongList.Remove(song);
-                        }
-                    }
-                }
-            }            
         }
     }
 }

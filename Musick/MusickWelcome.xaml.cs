@@ -179,18 +179,36 @@ namespace Musick
         {
             await Task.Run(() => 
             {               
-                JsonSerializer serializer = new JsonSerializer();
                 foreach (var file in Directory.GetFiles(ConfigClass.appLibraryFolder))
                 {
                     ObservableCollection<Song> tempLibrary = JSON.DeserializeLibrary(file);
+                    LibraryFile tempLibFile = GenerateLibrary.CreateLibraryEntry(tempLibrary, file);
                     try
                     {
-                        foreach (var song in tempLibrary)
+                        foreach (var song in tempLibrary.ToList())
                         {
-                            tempSongList.Add(song);
+                            if (!File.Exists(song.FileLocation))
+                            {
+                                tempLibrary.Remove(song);
+                            } 
                         }
 
-                        MusickSettings.libList.Add(GenerateLibrary.CreateLibraryEntry(tempLibrary, file)); // Creates an entry for the local library file to be displayed and interracted with.
+                        foreach (var musicFile in Directory.GetFiles(tempLibFile.LibrarySource, "*", SearchOption.AllDirectories))
+                        {
+                            if (!tempLibrary.Any(p => p.FileLocation == musicFile))
+                            {
+                                tempLibrary.Add(GenerateLibrary.GenerateSong(musicFile));
+                            }
+                        }
+
+                        JSON.SerializeLibrary(file, tempLibrary);
+
+                        foreach (var tempSong in tempLibrary)
+                        {
+                            tempSongList.Add(tempSong);
+                        }
+
+                        MusickSettings.libList.Add(tempLibFile); // Creates an entry for the local library file to be displayed and interracted with.
                     }
 
 
