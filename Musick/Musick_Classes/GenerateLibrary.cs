@@ -16,15 +16,16 @@ namespace Musick.Musick_Classes
             ObservableCollection<Song> tempLibrary = new ObservableCollection<Song>();
             foreach (var file in Directory.GetFiles(directory, "*", SearchOption.AllDirectories))
             {
-                tempLibrary.Add(GenerateSong(file));
+                if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav"))
+                {
+                    tempLibrary.Add(GenerateSong(file));
+                }
             }
             return tempLibrary;
         }
         
         public static Song GenerateSong(string file)
         {
-            if (file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav"))
-            {
                 var tagFile = TagLib.File.Create(file);
                 string tempTitle;
                 string tempArtist;
@@ -39,13 +40,11 @@ namespace Musick.Musick_Classes
                 tempYear = (tagFile.Tag.Year.ToString() != "0") ? tagFile.Tag.Year.ToString() : "[No Year]";
                 Song tempSong = new Song(file, tempTitle, tempArtist, tempAlbum, tempGenre, tempYear);
                 return tempSong;
-            }
-            return null;
         }
 
         public static LibraryFile CreateLibraryEntry(ObservableCollection<Song> libSourceToUse, string tempMusicLibraryFile)
         {
-            string tempSource = System.IO.Path.GetDirectoryName(libSourceToUse[0].FileLocation);
+            string tempSource = System.IO.Path.GetDirectoryName(libSourceToUse[1].FileLocation);
             string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
             string tempFileLoc = tempMusicLibraryFile;
             LibraryFile tempLibFile = new LibraryFile(tempFileLoc, tempLibName, tempSource);

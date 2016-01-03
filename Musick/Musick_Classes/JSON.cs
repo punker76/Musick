@@ -39,6 +39,7 @@ namespace Musick.Musick_Classes
         // Serializes a library from an ObservableCollection of songs.
         public static void SerializeLibrary(string fileToSerialize, ObservableCollection<Song> libraryToSerialize)
         {
+            serializer.NullValueHandling = NullValueHandling.Ignore;
             using (StreamWriter sw = new StreamWriter(fileToSerialize))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {

@@ -6,10 +6,47 @@
         xmlns:local="clr-namespace:Musick"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Musick - Library" x:Name="LibraryWindow" Width="800" Height="450" IsMinButtonEnabled="False" KeyDown="LibraryWindow_KeyDown" Icon="Musick.ico"  IsMaxRestoreButtonEnabled="False" IsCloseButtonEnabled="False" TitleCaps="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowActivated="False">
+        Title="Musick - Library" Loaded="LibraryWindow_Loaded" x:Name="LibraryWindow" Width="800" Height="450" IsMinButtonEnabled="False" KeyDown="LibraryWindow_KeyDown" Icon="Musick.ico"  IsMaxRestoreButtonEnabled="False" IsCloseButtonEnabled="False" TitleCaps="False" ShowIconOnTitleBar="False" ShowCloseButton="False" ShowMaxRestoreButton="False" ShowMinButton="False" ShowSystemMenuOnRightClick="False" ShowActivated="False">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <DataGrid x:Name="dtgArtist"
+                      Grid.Column="0"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"                     
+                      AutoGenerateColumns="False"
+                      SelectionChanged="dtgArtist_SelectionChanged"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Artist" Width="1*" Binding="{Binding}"/>
+                </DataGrid.Columns>
+                <DataGrid.Items>
+                    
+                </DataGrid.Items>
+            </DataGrid>
+            <DataGrid x:Name="dtgAlbum"
+                      Grid.Column="1"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      AutoGenerateColumns="False"
+                      SelectionChanged="dtgAlbum_SelectionChanged"
+                      IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Album" Width="1*" Binding="{Binding}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
 
         <DataGrid x:Name="dtgLibrary"
+                  Grid.Row="1"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   ItemsSource="{Binding}"

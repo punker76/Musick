@@ -183,26 +183,26 @@ namespace Musick
                 {
                     ObservableCollection<Song> tempLibrary = JSON.DeserializeLibrary(file);
                     LibraryFile tempLibFile = GenerateLibrary.CreateLibraryEntry(tempLibrary, file);
-                    try
+                    foreach (var song in tempLibrary.ToList())
                     {
-                        foreach (var song in tempLibrary.ToList())
+                        if (!File.Exists(song.FileLocation))
                         {
-                            if (!File.Exists(song.FileLocation))
-                            {
-                                tempLibrary.Remove(song);
-                            } 
+                            tempLibrary.Remove(song);
                         }
-
-                        foreach (var musicFile in Directory.GetFiles(tempLibFile.LibrarySource, "*", SearchOption.AllDirectories))
+                    }
+                    foreach (var musicFile in Directory.GetFiles(tempLibFile.LibrarySource, "*", SearchOption.AllDirectories))
+                    {
+                        if (!tempLibrary.Any(p => p.FileLocation == musicFile))
                         {
-                            if (!tempLibrary.Any(p => p.FileLocation == musicFile))
+                            if(file.Contains(".mp3") || file.Contains(".wma") || file.Contains(".wav"))
                             {
                                 tempLibrary.Add(GenerateLibrary.GenerateSong(musicFile));
-                            }
+                            }                     
                         }
-
-                        JSON.SerializeLibrary(file, tempLibrary);
-
+                    }
+                    JSON.SerializeLibrary(file, tempLibrary);
+                    try
+                    {
                         foreach (var tempSong in tempLibrary)
                         {
                             tempSongList.Add(tempSong);

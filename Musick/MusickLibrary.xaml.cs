@@ -33,9 +33,30 @@ namespace Musick
             InitializeComponent();
 
             this.DataContext = this;
-            dtgLibrary.ItemsSource = SongList;
+            dtgLibrary.ItemsSource = null;
+            dtgAlbum.ItemsSource = null;
+            dtgArtist.ItemsSource = null;
         }
 
+        private void LibraryWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            dtgArtist.ItemsSource = SongList.Select(x => x.SongArtist).Distinct().ToList();          
+        }
+
+        private void dtgArtist_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            dtgLibrary.ItemsSource = null;
+            dtgAlbum.ItemsSource = SongList.Where(x =>x.SongArtist == dtgArtist.SelectedItem.ToString()).Select(x=>x.SongAlbum).Distinct().ToList();
+            dtgAlbum.SelectedIndex = 0;
+        }
+
+        private void dtgAlbum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(dtgAlbum.SelectedIndex != -1)
+            {
+                dtgLibrary.ItemsSource = SongList.Where(x => x.SongAlbum == dtgAlbum.SelectedItem.ToString()).Select(x => x).ToList();
+            }
+        }
 
         public static ObservableCollection<Song> SongList;
 
@@ -95,7 +116,7 @@ namespace Musick
                 this.ShowTitleBar = !this.ShowTitleBar;
             }
         }
-        #endregion
 
+        #endregion
     }
 }
