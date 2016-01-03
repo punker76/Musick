@@ -38,6 +38,10 @@ namespace Musick
             lstArtist.ItemsSource = null;
         }
 
+        public static ObservableCollection<Song> SongList;
+
+        public Song currentSong;
+
         #region Window data binding logic
         private void LibraryWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -102,9 +106,6 @@ namespace Musick
         }
         #endregion
 
-        public static ObservableCollection<Song> SongList;
-
-        public Song currentSong;
 
         #region song selection.
         public void NextSong()
@@ -118,15 +119,13 @@ namespace Musick
             if(dtgLibrary.SelectedIndex==0)
             {               
                 dtgLibrary.SelectedIndex = dtgLibrary.Items.Count -1;
-                currentSong = (Song)dtgLibrary.SelectedItem;
-                
+                currentSong = (Song)dtgLibrary.SelectedItem;               
             }
             else
             {
                 dtgLibrary.SelectedIndex--;
                 currentSong = (Song)dtgLibrary.SelectedItem;
-            }
-            
+            }        
         }
 
         public void RandomSong()
