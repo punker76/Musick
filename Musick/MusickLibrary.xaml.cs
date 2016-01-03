@@ -34,27 +34,28 @@ namespace Musick
 
             this.DataContext = this;
             dtgLibrary.ItemsSource = null;
-            dtgAlbum.ItemsSource = null;
-            dtgArtist.ItemsSource = null;
+            lstAlbum.ItemsSource = null;
+            lstArtist.ItemsSource = null;
         }
+
 
         private void LibraryWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            dtgArtist.ItemsSource = SongList.Select(x => x.SongArtist).Distinct().ToList();          
+            lstArtist.ItemsSource = SongList.Select(x => x.SongArtist).Distinct().ToList();          
         }
 
-        private void dtgArtist_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void lstArtist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             dtgLibrary.ItemsSource = null;
-            dtgAlbum.ItemsSource = SongList.Where(x =>x.SongArtist == dtgArtist.SelectedItem.ToString()).Select(x=>x.SongAlbum).Distinct().ToList();
-            dtgAlbum.SelectedIndex = 0;
+            lstAlbum.ItemsSource = SongList.Where(x => x.SongArtist == lstArtist.SelectedItem.ToString()).Select(x => x.SongAlbum).Distinct().ToList();
+            lstAlbum.SelectedIndex = 0;
         }
 
-        private void dtgAlbum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void lstAlbum_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(dtgAlbum.SelectedIndex != -1)
+            if (lstAlbum.SelectedIndex != -1)
             {
-                dtgLibrary.ItemsSource = SongList.Where(x => x.SongAlbum == dtgAlbum.SelectedItem.ToString()).Select(x => x).ToList();
+                dtgLibrary.ItemsSource = SongList.Where(x => x.SongAlbum == lstAlbum.SelectedItem.ToString()).Select(x => x).ToList();
             }
         }
 

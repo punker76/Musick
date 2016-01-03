@@ -18,37 +18,32 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <DataGrid x:Name="dtgArtist"
-                      Grid.Column="0"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"                     
-                      AutoGenerateColumns="False"
-                      SelectionChanged="dtgArtist_SelectionChanged"
-                      IsReadOnly="True">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Artist" Width="1*" Binding="{Binding}"/>
-                </DataGrid.Columns>
-                <DataGrid.Items>
-                    
-                </DataGrid.Items>
-            </DataGrid>
-            <DataGrid x:Name="dtgAlbum"
-                      Grid.Column="1"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      AutoGenerateColumns="False"
-                      SelectionChanged="dtgAlbum_SelectionChanged"
-                      IsReadOnly="True">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Album" Width="1*" Binding="{Binding}"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <ListBox x:Name="lstArtist"
+                     SelectionChanged="lstArtist_SelectionChanged"
+                     Grid.Column="0"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+                     Margin="5,5,5,5"
+                     BorderBrush="{DynamicResource AccentColorBrush}"
+                     BorderThickness="1"/>
+
+            <ListBox x:Name="lstAlbum"
+                     SelectionChanged="lstAlbum_SelectionChanged"
+                     Grid.Column="1"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+                     Margin="5,5,5,5"
+                     BorderBrush="{DynamicResource AccentColorBrush}"
+                     BorderThickness="1"/>
         </Grid>
 
         <DataGrid x:Name="dtgLibrary"
                   Grid.Row="1"
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
+                  Margin="5,5,5,5"
+                  BorderBrush="{DynamicResource AccentColorBrush}"
+                  BorderThickness="1"
                   ItemsSource="{Binding}"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"                 
