@@ -18,23 +18,42 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <ListBox x:Name="lstArtist"
-                     SelectionChanged="lstArtist_SelectionChanged"
-                     Grid.Column="0"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Stretch"
-                     Margin="5,5,5,5"
-                     BorderBrush="{DynamicResource AccentColorBrush}"
-                     BorderThickness="1"/>
-
-            <ListBox x:Name="lstAlbum"
-                     SelectionChanged="lstAlbum_SelectionChanged"
-                     Grid.Column="1"
-                     HorizontalAlignment="Stretch"
-                     VerticalAlignment="Stretch"
-                     Margin="5,5,5,5"
-                     BorderBrush="{DynamicResource AccentColorBrush}"
-                     BorderThickness="1"/>
+            <Grid Grid.Column="0"
+                  Margin="5,5,5,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ToggleButton x:Name="tglAllArtists"
+                              Content="All Artists"
+                              BorderThickness="0"
+                              Controls:ButtonHelper.CornerRadius="0"
+                              ToggleButton.Checked="tglAllArtists_Checked"
+                              ToggleButton.Unchecked="tglAllArtists_Unchecked"/>
+                <ListBox x:Name="lstArtist"
+                         Grid.Row="1"
+                         SelectionChanged="lstArtist_SelectionChanged"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"/>
+            </Grid>
+            <Grid Grid.Column="1"
+                  Margin="5,5,5,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <ToggleButton x:Name="tglAllAlbums"
+                              Content="All Albums"
+                              BorderThickness="0"
+                              Controls:ButtonHelper.CornerRadius="0"
+                              ToggleButton.Checked="tglAllAlbums_Checked"
+                              ToggleButton.Unchecked="tglAllAlbums_Unchecked"/>
+                <ListBox x:Name="lstAlbum"
+                        SelectionChanged="lstAlbum_SelectionChanged"
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"/>
+            </Grid>
         </Grid>
 
         <DataGrid x:Name="dtgLibrary"
@@ -42,8 +61,6 @@
                   HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch"
                   Margin="5,5,5,5"
-                  BorderBrush="{DynamicResource AccentColorBrush}"
-                  BorderThickness="1"
                   ItemsSource="{Binding}"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"                 

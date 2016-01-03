@@ -38,7 +38,7 @@ namespace Musick
             lstArtist.ItemsSource = null;
         }
 
-
+        #region Window data binding logic
         private void LibraryWindow_Loaded(object sender, RoutedEventArgs e)
         {
             lstArtist.ItemsSource = SongList.Select(x => x.SongArtist).Distinct().ToList();          
@@ -47,17 +47,60 @@ namespace Musick
         private void lstArtist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             dtgLibrary.ItemsSource = null;
-            lstAlbum.ItemsSource = SongList.Where(x => x.SongArtist == lstArtist.SelectedItem.ToString()).Select(x => x.SongAlbum).Distinct().ToList();
-            lstAlbum.SelectedIndex = 0;
+            
+            if(lstArtist.SelectedIndex != -1)
+            {
+                if(tglAllAlbums.IsChecked == true)
+                {
+                    lstAlbum.ItemsSource = SongList.Where(x => x.SongArtist == lstArtist.SelectedItem.ToString()).Select(x => x.SongAlbum).Distinct().ToList();
+                    dtgLibrary.ItemsSource = SongList.Where(song => lstAlbum.Items.Contains(song.SongAlbum)).Select(song => song).Distinct().ToList();
+                }
+                else
+                {
+                    lstAlbum.ItemsSource = SongList.Where(x => x.SongArtist == lstArtist.SelectedItem.ToString()).Select(x => x.SongAlbum).Distinct().ToList();
+                    lstAlbum.SelectedIndex = 0;
+                }                     
+            }        
         }
 
         private void lstAlbum_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        {         
             if (lstAlbum.SelectedIndex != -1)
-            {
-                dtgLibrary.ItemsSource = SongList.Where(x => x.SongAlbum == lstAlbum.SelectedItem.ToString()).Select(x => x).ToList();
+            {               
+                dtgLibrary.ItemsSource = SongList.Where(x => x.SongAlbum == lstAlbum.SelectedItem.ToString()).Select(x => x).ToList();            
             }
         }
+
+        private void tglAllArtists_Checked(object sender, RoutedEventArgs e)
+        {
+            lstArtist.SelectedIndex = -1;
+            lstArtist.IsEnabled = false;
+            lstAlbum.ItemsSource = SongList.Select(x => x.SongAlbum).Distinct().ToList();
+            if (tglAllAlbums.IsChecked == true)
+            {
+                dtgLibrary.ItemsSource = SongList.Where(song => lstAlbum.Items.Contains(song.SongAlbum)).Select(song => song).Distinct().ToList();
+            }
+        }
+
+        private void tglAllArtists_Unchecked(object sender, RoutedEventArgs e)
+        {
+            lstArtist.IsEnabled = true;
+            lstArtist.SelectedIndex = 0;
+        }
+
+        private void tglAllAlbums_Checked(object sender, RoutedEventArgs e)
+        {
+            lstAlbum.SelectedIndex = -1;
+            lstAlbum.IsEnabled = false;
+            dtgLibrary.ItemsSource = SongList.Where(song => lstAlbum.Items.Contains(song.SongAlbum)).Select(song => song).Distinct().ToList();
+        }
+
+        private void tglAllAlbums_Unchecked(object sender, RoutedEventArgs e)
+        {
+            lstAlbum.IsEnabled = true;
+            lstAlbum.SelectedIndex = 0;
+        }
+        #endregion
 
         public static ObservableCollection<Song> SongList;
 
@@ -118,6 +161,8 @@ namespace Musick
             }
         }
 
+
         #endregion
+        
     }
 }

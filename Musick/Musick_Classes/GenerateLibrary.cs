@@ -45,6 +45,8 @@ namespace Musick.Musick_Classes
         public static LibraryFile CreateLibraryEntry(ObservableCollection<Song> libSourceToUse, string tempMusicLibraryFile)
         {
             string tempSource = System.IO.Path.GetDirectoryName(libSourceToUse[1].FileLocation);
+
+
             string tempLibName = System.IO.Path.GetFileNameWithoutExtension(tempMusicLibraryFile);
             string tempFileLoc = tempMusicLibraryFile;
             LibraryFile tempLibFile = new LibraryFile(tempFileLoc, tempLibName, tempSource);
